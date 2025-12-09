@@ -1,0 +1,14 @@
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Backend env
+backend/.env
+
+# OS
+.DS_Store
+
+# Vite / editor
+.idea/
+.vscode/
