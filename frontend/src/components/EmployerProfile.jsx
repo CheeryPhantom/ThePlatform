@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { apiFetch } from '../api/api';
+import DashboardLayout from './DashboardLayout';
 
 const EmployerProfile = () => {
   const { user } = useAuth();
@@ -57,50 +58,52 @@ const EmployerProfile = () => {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="employer-profile">
-      <div className="card">
-        <h2>Company Profile</h2>
-        <p className="form-description">Tell candidates about your company to attract top talent.</p>
-        <form onSubmit={handleSubmit} className="employer-form">
-          <div className="form-group">
-            <label>Company Name</label>
-            <input
-              type="text"
-              name="company_name"
-              value={profile.company_name}
-              onChange={handleChange}
-              placeholder="Enter your company name"
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Website</label>
-            <input
-              type="url"
-              name="website"
-              value={profile.website}
-              onChange={handleChange}
-              placeholder="https://yourcompany.com"
-            />
-          </div>
-          <div className="form-group" style={{gridColumn: '1 / -1'}}>
-            <label>Company Bio</label>
-            <textarea
-              name="bio"
-              value={profile.bio}
-              onChange={handleChange}
-              placeholder="Describe your company, culture, and what makes you unique..."
-              rows="6"
-            />
-          </div>
-          <div className="form-actions" style={{gridColumn: '1 / -1', textAlign: 'center'}}>
-            <button type="submit" className="btn" disabled={saving}>
-              {saving ? 'Saving...' : 'Save Profile'}
-            </button>
-          </div>
-        </form>
+    <DashboardLayout>
+      <div className="employer-profile">
+        <div className="card">
+          <h2>Company Profile</h2>
+          <p className="form-description">Tell candidates about your company to attract top talent.</p>
+          <form onSubmit={handleSubmit} className="employer-form">
+            <div className="form-group">
+              <label>Company Name</label>
+              <input
+                type="text"
+                name="company_name"
+                value={profile.company_name}
+                onChange={handleChange}
+                placeholder="Enter your company name"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Website</label>
+              <input
+                type="url"
+                name="website"
+                value={profile.website}
+                onChange={handleChange}
+                placeholder="https://yourcompany.com"
+              />
+            </div>
+            <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+              <label>Company Bio</label>
+              <textarea
+                name="bio"
+                value={profile.bio}
+                onChange={handleChange}
+                placeholder="Describe your company, culture, and what makes you unique..."
+                rows="6"
+              />
+            </div>
+            <div className="form-actions" style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
+              <button type="submit" className="btn" disabled={saving}>
+                {saving ? 'Saving...' : 'Save Profile'}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 

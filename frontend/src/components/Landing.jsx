@@ -35,6 +35,15 @@ const Landing = () => {
 
   return (
     <div className="landing-page">
+      {/* Navigation Header */}
+      <nav className="landing-nav container">
+        <div className="nav-logo">The Platform</div>
+        <div className="nav-links">
+          <Link to="/login" className="nav-link">Log In</Link>
+          <Link to="/register" className="btn btn-primary btn-sm">Get Started</Link>
+        </div>
+      </nav>
+
       {/* Hero Section */}
       <section className="hero">
         <div className="container">
@@ -45,10 +54,10 @@ const Landing = () => {
                 Assessment-driven matching for IT and Finance professionals
               </p>
               <div className="hero-ctas">
-                <Link to="/register" className="btn-primary">
-                  Get Started
+                <Link to="/register" className="landing-btn-primary">
+                  Start Your Journey
                 </Link>
-                <Link to="/register?role=employer" className="btn-secondary">
+                <Link to="/register?role=employer" className="landing-btn-secondary">
                   For Employers
                 </Link>
               </div>

@@ -64,6 +64,9 @@ const Login = () => {
 
   return (
     <div className="login-page">
+      <div className="auth-logo-container">
+        <Link to="/" className="auth-logo">The Platform</Link>
+      </div>
       <div className="login-card">
         <div className="login-header">
           <h1 className="login-title">Welcome Back</h1>
@@ -124,7 +127,7 @@ const Login = () => {
           >
             {isLoading ? (
               <>
-                <div className="spinner" style={{width: '20px', height: '20px', border: '2px solid #fff', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite'}}></div>
+                <div className="spinner" style={{ width: '20px', height: '20px', border: '2px solid #fff', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
                 Signing in...
               </>
             ) : (

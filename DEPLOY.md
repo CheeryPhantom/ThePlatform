@@ -11,12 +11,26 @@ This guide outlines the steps to deploy both the Frontend and Backend of **The P
 
 Since we are deploying to a serverless environment, we need a cloud-hosted database. Vercel Postgres is a convenient option.
 
-1.  Go to your Vercel Dashboard.
-2.  Click **Storage** -> **Create Database** -> **Postgres**.
-3.  Give it a name (e.g., `the-platform-db`) and select a region.
-4.  Once created, go to the **.env.local** tab in the database dashboard.
-5.  Copy the connection details (specifically `POSTGRES_URL` or standard `DATABASE_URL`).
-6.  You will need to run your `schema.sql` against this new database using a tool like TablePlus or `psql`, or by connecting from your local machine.
+1.  **Go to your Vercel Dashboard**: Navigate to [https://vercel.com/dashboard](https://vercel.com/dashboard).
+2.  **Create Store**:
+    *   Click on the **Storage** tab at the top of the page.
+    *   Click the **Create Database** button.
+    *   Select **Postgres** (Serverless SQL) and click **Continue**.
+3.  **Configuration**:
+    *   **Store Name**: Enter a name like `the-platform-db`.
+    *   **Region**: Select a region close to your users (e.g., `Washington, D.C. (iad1)`).
+    *   Click **Create**.
+4.  **Get Connection Details**:
+    *   Once the database is created, you will be taken to its specific page.
+    *   On the left sidebar, click **.env.local**.
+    *   Click the **Copy Snippet** button or manually copy the `POSTGRES_URL` value.
+5.  **Initialize the Database** (Running the Schema):
+    *   You need to create the tables in this new cloud database. The easiest way is to connect to it from your local machine.
+    *   **Option A (Terminal)**: If you have `psql` installed, run:
+        ```bash
+        psql "YOUR_COPIED_POSTGRES_URL" -f db/schema.sql
+        ```
+    *   **Option B (GUI)**: Use a tool like [TablePlus](https://tableplus.com/). Create a new connection using the connection string (Import from URL), paste your `POSTGRES_URL`, connect, and then open the SQL editor. Copy-paste the content of `db/schema.sql` and run all.
 
 ## 2. Backend Deployment
 

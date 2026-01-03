@@ -105,6 +105,9 @@ const Register = () => {
 
   return (
     <div className="register-page">
+      <div className="auth-logo-container">
+        <Link to="/" className="auth-logo">The Platform</Link>
+      </div>
       <div className="register-card">
         <div className="register-header">
           <h1 className="register-title">Join The Platform</h1>
@@ -242,7 +245,7 @@ const Register = () => {
           >
             {isLoading ? (
               <>
-                <div className="spinner" style={{width: '20px', height: '20px', border: '2px solid #fff', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite'}}></div>
+                <div className="spinner" style={{ width: '20px', height: '20px', border: '2px solid #fff', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
                 Creating account...
               </>
             ) : (

@@ -5,6 +5,19 @@
   justify-content: center;
   background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
   padding: var(--space-4);
+  flex-direction: column;
+}
+
+.auth-logo-container {
+  margin-bottom: var(--space-8);
+}
+
+.auth-logo {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  color: var(--primary-700);
+  text-decoration: none;
+  letter-spacing: -0.5px;
 }
 
 .login-card {

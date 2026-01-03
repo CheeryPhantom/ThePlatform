@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import SkillTag from './SkillTag';
 import { Search, MapPin, DollarSign, Clock, Bookmark, ArrowRight } from 'lucide-react';
+import DashboardLayout from './DashboardLayout';
 import './JobList.css';
 
 const JobList = () => {
@@ -121,150 +122,151 @@ const JobList = () => {
   };
 
   return (
-    <div className="job-list-page">
-      {/* Hero Section */}
-      <section className="job-list-hero">
-        <h1>Find Your Dream Job</h1>
-        <p>Discover opportunities that match your skills and experience</p>
-      </section>
+    <DashboardLayout>
+      <div className="job-list-page">
+        <div className="job-list-header">
+          <h1>Find Your Dream Job</h1>
+          <p>Discover opportunities that match your skills and experience</p>
+        </div>
 
-      <div className="job-list-content">
-        {/* Search Filters */}
-        <section className="search-filters-section">
-          <div className="search-filters-card">
-            <div className="search-filters-grid">
-              <div className="search-input-group">
-                <Search className="search-input-icon" size={20} />
+        <div className="job-list-content">
+          {/* Search Filters */}
+          <section className="search-filters-section">
+            <div className="search-filters-card">
+              <div className="search-filters-grid">
+                <div className="search-input-group">
+                  <Search className="search-input-icon" size={20} />
+                  <input
+                    type="text"
+                    className="search-input"
+                    placeholder="Search jobs..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
                 <input
                   type="text"
-                  className="search-input"
-                  placeholder="Search jobs..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="location-input"
+                  placeholder="Location"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
                 />
+                <select
+                  className="sort-select"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="best-match">Best Match</option>
+                  <option value="most-recent">Most Recent</option>
+                  <option value="highest-salary">Highest Salary</option>
+                </select>
               </div>
-              <input
-                type="text"
-                className="location-input"
-                placeholder="Location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-              />
-              <select
-                className="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="best-match">Best Match</option>
-                <option value="most-recent">Most Recent</option>
-                <option value="highest-salary">Highest Salary</option>
-              </select>
             </div>
-          </div>
-        </section>
+          </section>
 
-        {/* Jobs Grid */}
-        <section className="jobs-section">
-          <div className="jobs-grid">
-            {filteredJobs.map(job => (
-              <div key={job.id} className="job-card">
-                <div className="job-card-header">
-                  <div className="company-info">
-                    <div className="company-logo">{job.companyLogo}</div>
-                    <div className="company-details">
-                      <h3>{job.company}</h3>
+          {/* Jobs Grid */}
+          <section className="jobs-section">
+            <div className="jobs-grid">
+              {filteredJobs.map(job => (
+                <div key={job.id} className="job-card">
+                  <div className="job-card-header">
+                    <div className="company-info">
+                      <div className="company-logo">{job.companyLogo}</div>
+                      <div className="company-details">
+                        <h3>{job.company}</h3>
+                      </div>
                     </div>
-                  </div>
-                  <button className="bookmark-btn" aria-label="Bookmark job">
-                    <Bookmark size={20} />
-                  </button>
-                </div>
-
-                <h2 className="job-title">{job.title}</h2>
-
-                <div className="job-meta">
-                  <div className="job-meta-item">
-                    <MapPin className="job-meta-icon" size={16} />
-                    {job.location}
-                  </div>
-                  <div className="job-meta-item">
-                    <DollarSign className="job-meta-icon" size={16} />
-                    {job.salary}
-                  </div>
-                  <div className="job-meta-item">
-                    <Clock className="job-meta-icon" size={16} />
-                    {job.type}
-                  </div>
-                </div>
-
-                <div className="match-section">
-                  <div className="match-bar-container">
-                    <div
-                      className={`match-bar-fill ${getMatchBarClass(job.matchPercentage)}`}
-                      style={{ width: `${job.matchPercentage}%` }}
-                    ></div>
-                  </div>
-                  <span
-                    className="match-percentage"
-                    style={{ color: getMatchColor(getMatchBarClass(job.matchPercentage)) }}
-                  >
-                    {job.matchPercentage}% Match
-                  </span>
-                </div>
-
-                {job.yourSkills.length > 0 && (
-                  <div className="skills-section">
-                    <div className="skills-section-title">Your Skills</div>
-                    <div className="skills-tags">
-                      {job.yourSkills.map((skill, index) => (
-                        <SkillTag
-                          key={index}
-                          skill={skill.name}
-                          matchLevel={skill.level}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {job.skillsToLearn.length > 0 && (
-                  <div className="skills-section">
-                    <div className="skills-section-title">Skills to Learn</div>
-                    <div className="skills-tags">
-                      {job.skillsToLearn.map((skill, index) => (
-                        <SkillTag
-                          key={index}
-                          skill={skill.name}
-                          matchLevel={skill.level}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="job-card-footer">
-                  <div className="job-stats">
-                    Posted {job.posted} · {job.applicants} applicants
-                  </div>
-                  <div className="job-actions">
-                    <button className="btn btn-secondary">View Details</button>
-                    <button className="btn btn-primary">
-                      Quick Apply
-                      <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                    <button className="bookmark-btn" aria-label="Bookmark job">
+                      <Bookmark size={20} />
                     </button>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Load More */}
-        <section className="load-more-section">
-          <button className="load-more-btn">Load More Jobs</button>
-        </section>
+                  <h2 className="job-title">{job.title}</h2>
+
+                  <div className="job-meta">
+                    <div className="job-meta-item">
+                      <MapPin className="job-meta-icon" size={16} />
+                      {job.location}
+                    </div>
+                    <div className="job-meta-item">
+                      <DollarSign className="job-meta-icon" size={16} />
+                      {job.salary}
+                    </div>
+                    <div className="job-meta-item">
+                      <Clock className="job-meta-icon" size={16} />
+                      {job.type}
+                    </div>
+                  </div>
+
+                  <div className="match-section">
+                    <div className="match-bar-container">
+                      <div
+                        className={`match-bar-fill ${getMatchBarClass(job.matchPercentage)}`}
+                        style={{ width: `${job.matchPercentage}%` }}
+                      ></div>
+                    </div>
+                    <span
+                      className="match-percentage"
+                      style={{ color: getMatchColor(getMatchBarClass(job.matchPercentage)) }}
+                    >
+                      {job.matchPercentage}% Match
+                    </span>
+                  </div>
+
+                  {job.yourSkills.length > 0 && (
+                    <div className="skills-section">
+                      <div className="skills-section-title">Your Skills</div>
+                      <div className="skills-tags">
+                        {job.yourSkills.map((skill, index) => (
+                          <SkillTag
+                            key={index}
+                            skill={skill.name}
+                            matchLevel={skill.level}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {job.skillsToLearn.length > 0 && (
+                    <div className="skills-section">
+                      <div className="skills-section-title">Skills to Learn</div>
+                      <div className="skills-tags">
+                        {job.skillsToLearn.map((skill, index) => (
+                          <SkillTag
+                            key={index}
+                            skill={skill.name}
+                            matchLevel={skill.level}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="job-card-footer">
+                    <div className="job-stats">
+                      Posted {job.posted} · {job.applicants} applicants
+                    </div>
+                    <div className="job-actions">
+                      <button className="btn btn-secondary">View Details</button>
+                      <button className="btn btn-primary">
+                        Quick Apply
+                        <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Load More */}
+          <section className="load-more-section">
+            <button className="load-more-btn">Load More Jobs</button>
+          </section>
+        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
