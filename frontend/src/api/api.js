@@ -1,11 +1,26 @@
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 export async function apiFetch(path, opts = {}) {
-  const res = await fetch(API_BASE + '/' + path, {
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(opts.headers || {}),
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const res = await fetch(`${API_BASE}/${path}`, {
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json' },
     ...opts,
+    headers,
   });
-  if(!res.ok) throw new Error(await res.text());
+
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error(message || 'Request failed');
+  }
+
   return res.json();
 }

@@ -180,6 +180,4 @@ CREATE TABLE audit_logs (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_profiles_skills ON user_profiles USING GIN (skills);
 CREATE INDEX idx_jobs_tags ON jobs USING GIN ((metadata->'tags'));
-*/
