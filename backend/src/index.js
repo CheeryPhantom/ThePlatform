@@ -6,12 +6,16 @@ import authRoutes from "./routes/auth.js";
 import usersRoutes from "./routes/users.js";
 import jobsRoutes from "./routes/jobs.js";
 import employersRoutes from "./routes/employers.js";
+import notificationsRoutes from "./routes/notifications.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : true,
+  credentials: true
+}));
 app.use(express.json());
 
 // Test route
@@ -34,6 +38,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/jobs", jobsRoutes);
 app.use("/api/employers", employersRoutes);
+app.use('/api/notifications', notificationsRoutes);
 
 const PORT = process.env.PORT || 4000;
 

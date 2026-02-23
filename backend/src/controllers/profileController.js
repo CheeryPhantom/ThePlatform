@@ -41,10 +41,8 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    console.log('Update profile request:', req.user, req.body);
     const { error, value } = profileSchema.validate(req.body);
     if (error) {
-      console.log('Validation error:', error.details[0].message);
       return res.status(400).json({ error: error.details[0].message });
     }
 

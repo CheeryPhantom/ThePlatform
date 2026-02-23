@@ -11,6 +11,9 @@ import TrainingHub from './components/TrainingHub';
 import Messages from './components/Messages';
 import Settings from './components/Settings';
 import Landing from './components/Landing';
+import ProtectedRoute from './components/ProtectedRoute';
+import Notifications from './components/Notifications';
+import PublicUserProfile from './components/PublicUserProfile';
 import './App.css';
 
 function App() {
@@ -22,14 +25,16 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/employer-profile" element={<EmployerProfile />} />
-            <Route path="/jobs" element={<JobList />} />
-            <Route path="/assessment" element={<Assessment />} />
-            <Route path="/training" element={<TrainingHub />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/employer-profile" element={<ProtectedRoute allowedRoles={['employer']}><EmployerProfile /></ProtectedRoute>} />
+            <Route path="/jobs" element={<ProtectedRoute><JobList /></ProtectedRoute>} />
+            <Route path="/assessment" element={<ProtectedRoute><Assessment /></ProtectedRoute>} />
+            <Route path="/training" element={<ProtectedRoute><TrainingHub /></ProtectedRoute>} />
+            <Route path="/messages" element={<ProtectedRoute><Messages /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/users/:userId" element={<PublicUserProfile />} />
           </Routes>
 
 

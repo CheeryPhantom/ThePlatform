@@ -22,7 +22,13 @@ export const authenticate = async (req, res, next) => {
 
 export const requireRole = (roles) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.role)) {
+    const normalizedRoles = Array.isArray(roles) ? roles : [roles];
+
+    if (!normalizedRoles.every((role) => typeof role === 'string')) {
+      return res.status(500).json({ error: 'Role middleware is misconfigured' });
+    }
+
+    if (!normalizedRoles.includes(req.user.role)) {
       return res.status(403).json({ error: 'Insufficient permissions' });
     }
     next();

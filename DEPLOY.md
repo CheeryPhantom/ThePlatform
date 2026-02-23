@@ -42,6 +42,7 @@ Since we are deploying to a serverless environment, we need a cloud-hosted datab
     *   **Environment Variables**: Add the following:
         *   `DATABASE_URL`: The value from step 1.
         *   `JWT_SECRET`: Any long random string.
+        *   `FRONTEND_URL`: Your frontend domain (e.g. `https://the-platform.vercel.app`).
         *   `NODE_ENV`: `production`
 4.  Click **Deploy**.
 5.  Once deployed, note the **Domains** URL (e.g., `https://the-platform-backend.vercel.app`).
@@ -60,3 +61,9 @@ Since we are deploying to a serverless environment, we need a cloud-hosted datab
 ## 4. Updates
 
 When you push changes to `main`, Vercel will automatically redeploy the affected projects.
+
+## 5. Post-Deploy Validation
+
+1. Confirm API health endpoint returns success.
+2. Confirm frontend login works and authenticated pages can fetch profile/jobs.
+3. Confirm `db/schema.sql` has been applied to production DB before first deploy.
