@@ -22,10 +22,8 @@ export const getEmployerProfile = async (req, res) => {
 
 export const updateEmployerProfile = async (req, res) => {
   try {
-    console.log('Update employer profile request:', req.user, req.body);
     const { error, value } = employerSchema.validate(req.body);
     if (error) {
-      console.log('Validation error:', error.details[0].message);
       return res.status(400).json({ error: error.details[0].message });
     }
 

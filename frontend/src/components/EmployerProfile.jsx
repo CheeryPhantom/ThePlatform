@@ -12,6 +12,7 @@ const EmployerProfile = () => {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [status, setStatus] = useState('');
 
   useEffect(() => {
     fetchProfile();
@@ -41,10 +42,10 @@ const EmployerProfile = () => {
         body: JSON.stringify(profile)
       });
       setProfile(updatedProfile);
-      alert('Profile updated successfully!');
+      setStatus('Profile updated successfully.');
     } catch (error) {
       console.error('Failed to update profile:', error);
-      alert(`Failed to update profile: ${error.message}`);
+      setStatus(error.message);
     } finally {
       setSaving(false);
     }
@@ -56,6 +57,7 @@ const EmployerProfile = () => {
   };
 
   if (loading) return <div>Loading...</div>;
+  if (!user) return <div>Loading...</div>;
 
   return (
     <DashboardLayout>
@@ -99,6 +101,7 @@ const EmployerProfile = () => {
               <button type="submit" className="btn" disabled={saving}>
                 {saving ? 'Saving...' : 'Save Profile'}
               </button>
+              {status && <p style={{ marginTop: '10px' }}>{status}</p>}
             </div>
           </form>
         </div>

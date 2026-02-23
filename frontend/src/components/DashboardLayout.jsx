@@ -32,6 +32,7 @@ const DashboardLayout = ({ children }) => {
         { icon: Target, label: 'Assessment', path: '/assessment' },
         { icon: GraduationCap, label: 'Training', path: '/training' },
         { icon: MessageSquare, label: 'Messages', path: '/messages' },
+        { icon: Bell, label: 'Notifications', path: '/notifications' },
         { icon: Settings, label: 'Settings', path: '/settings' }
     ];
 
@@ -105,7 +106,7 @@ const DashboardLayout = ({ children }) => {
                         )}
                     </div>
                     <div className="header-actions">
-                        <button className="header-notification-btn">
+                        <button className="header-notification-btn" onClick={() => navigate('/notifications')}>
                             <Bell size={20} />
                         </button>
                         <button className="header-avatar-btn" onClick={() => navigate('/profile')}>

@@ -84,7 +84,7 @@ const Profile = () => {
         body: JSON.stringify(profile)
       });
       setProfile(updatedProfile);
-      alert('Profile updated successfully!');
+      setErrors((prev) => ({ ...prev, submit: 'Profile updated successfully.' }));
     } catch (error) {
       console.error('Failed to update profile:', error);
       setErrors({ submit: error.message });

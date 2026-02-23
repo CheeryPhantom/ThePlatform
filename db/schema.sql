@@ -19,7 +19,7 @@ CREATE INDEX idx_users_email ON users(email);
 -- Profiles
 CREATE TABLE user_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
   full_name TEXT,
   headline TEXT,
   location JSONB,
@@ -38,7 +38,7 @@ CREATE INDEX idx_profiles_skills ON user_profiles USING GIN (skills);
 -- Employers
 CREATE TABLE employers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
   company_name TEXT,
   website TEXT,
   bio TEXT,
@@ -77,6 +77,8 @@ CREATE TABLE job_applications (
   applied_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
+
+CREATE UNIQUE INDEX idx_job_applications_unique_user_job ON job_applications(job_id, user_id);
 
 -- Assessment
 CREATE TABLE assessment_question_sets (
@@ -170,6 +172,18 @@ CREATE TABLE notifications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
+CREATE TABLE user_settings (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+  language TEXT DEFAULT 'en-US',
+  email_on_message BOOLEAN DEFAULT TRUE,
+  email_on_job_match BOOLEAN DEFAULT TRUE,
+  subscribe_newsletter BOOLEAN DEFAULT FALSE,
+  profile_public BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+);
+
 CREATE TABLE audit_logs (
   id BIGSERIAL PRIMARY KEY,
   actor UUID,
@@ -180,6 +194,5 @@ CREATE TABLE audit_logs (
 );
 
 -- Indexes for performance
-CREATE INDEX idx_profiles_skills ON user_profiles USING GIN (skills);
+CREATE INDEX idx_notifications_user_id_created_at ON notifications(user_id, created_at DESC);
 CREATE INDEX idx_jobs_tags ON jobs USING GIN ((metadata->'tags'));
-*/
