@@ -19,14 +19,21 @@ CREATE INDEX idx_users_email ON users(email);
 -- Profiles
 CREATE TABLE user_profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
   full_name TEXT,
+  phone TEXT,
   headline TEXT,
   location JSONB,
   experience_years INT,
   skills TEXT[],
   certifications JSONB,
   resume_url TEXT,
+  linkedin_url TEXT,
+  github_url TEXT,
+  portfolio_url TEXT,
+  preferred_title TEXT,
+  availability TEXT,
+  work_authorization TEXT,
   preferences JSONB,
   last_assessment_id UUID,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -38,10 +45,16 @@ CREATE INDEX idx_profiles_skills ON user_profiles USING GIN (skills);
 -- Employers
 CREATE TABLE employers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
   company_name TEXT,
   website TEXT,
   bio TEXT,
+  logo_url TEXT,
+  location TEXT,
+  industry TEXT,
+  company_size TEXT,
+  founded_year INT,
+  verified BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
@@ -50,14 +63,23 @@ CREATE TABLE employers (
 CREATE TABLE jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   employer_id UUID REFERENCES employers(id) ON DELETE CASCADE,
+  created_by_user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   title TEXT NOT NULL,
   description TEXT,
   requirements JSONB,
   location JSONB,
+  is_remote BOOLEAN DEFAULT FALSE,
   employment_type TEXT,
+  experience_level TEXT,
+  currency TEXT,
+  salary_min NUMERIC(10,2),
+  salary_max NUMERIC(10,2),
   salary_range JSONB,
+  application_url TEXT,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'closed')),
   active BOOLEAN DEFAULT TRUE,
   posted_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  expires_at TIMESTAMP WITH TIME ZONE,
   closed_at TIMESTAMP WITH TIME ZONE,
   metadata JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
@@ -71,11 +93,15 @@ CREATE TABLE job_applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID REFERENCES jobs(id) ON DELETE CASCADE,
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  status TEXT DEFAULT 'submitted',
+  status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'reviewing', 'shortlisted', 'interview', 'rejected', 'hired')),
   cover_letter TEXT,
   resume_url TEXT,
+  notes TEXT,
+  source TEXT,
   applied_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
-  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
+  reviewed_at TIMESTAMP WITH TIME ZONE,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+  UNIQUE (job_id, user_id)
 );
 
 -- Assessment
@@ -153,6 +179,7 @@ CREATE TABLE training_enrollments (
 -- Notifications, messages, audit logs
 CREATE TABLE messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  conversation_id UUID DEFAULT gen_random_uuid(),
   from_user UUID REFERENCES users(id),
   to_user UUID REFERENCES users(id),
   job_id UUID REFERENCES jobs(id),
@@ -164,7 +191,10 @@ CREATE TABLE messages (
 CREATE TABLE notifications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id),
+  actor_id UUID REFERENCES users(id),
+  category TEXT,
   type TEXT,
+  link TEXT,
   payload JSONB,
   read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
@@ -181,3 +211,15 @@ CREATE TABLE audit_logs (
 
 -- Indexes for performance
 CREATE INDEX idx_jobs_tags ON jobs USING GIN ((metadata->'tags'));
+CREATE INDEX idx_profiles_user_id ON user_profiles(user_id);
+CREATE INDEX idx_employers_user_id ON employers(user_id);
+CREATE INDEX idx_jobs_employer_id ON jobs(employer_id);
+CREATE INDEX idx_jobs_created_by_user_id ON jobs(created_by_user_id);
+CREATE INDEX idx_jobs_status ON jobs(status);
+CREATE INDEX idx_jobs_posted_at ON jobs(posted_at DESC);
+CREATE INDEX idx_job_applications_job_id ON job_applications(job_id);
+CREATE INDEX idx_job_applications_user_id ON job_applications(user_id);
+CREATE INDEX idx_job_applications_status ON job_applications(status);
+CREATE INDEX idx_messages_conversation_id ON messages(conversation_id);
+CREATE INDEX idx_notifications_user_id ON notifications(user_id);
+CREATE INDEX idx_notifications_category ON notifications(category);
