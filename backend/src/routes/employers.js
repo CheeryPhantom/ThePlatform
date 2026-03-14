@@ -8,9 +8,9 @@ const router = express.Router();
 router.use(authenticate);
 
 // Get employer profile
-router.get('/profile', requireRole('employer'), getEmployerProfile);
+router.get('/profile', requireRole(['employer']), getEmployerProfile);
 
 // Update employer profile
-router.put('/profile', requireRole('employer'), updateEmployerProfile);
+router.put('/profile', requireRole(['employer']), updateEmployerProfile);
 
 export default router;

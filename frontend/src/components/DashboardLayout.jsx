@@ -5,14 +5,13 @@ import {
     Home,
     User,
     Briefcase,
-    Target,
-    GraduationCap,
     Settings,
     Bell,
     Menu,
     X,
     Search,
-    MessageSquare
+    Building2,
+    PlusSquare
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -24,16 +23,22 @@ const DashboardLayout = ({ children }) => {
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
+    const profilePath = user?.role === 'employer' ? '/employer-profile' : '/profile';
 
-    const sidebarItems = [
-        { icon: Home, label: 'Dashboard', path: '/dashboard' },
-        { icon: User, label: 'Profile', path: user?.role === 'employer' ? '/employer-profile' : '/profile' },
-        { icon: Briefcase, label: 'Jobs', path: '/jobs' },
-        { icon: Target, label: 'Assessment', path: '/assessment' },
-        { icon: GraduationCap, label: 'Training', path: '/training' },
-        { icon: MessageSquare, label: 'Messages', path: '/messages' },
-        { icon: Settings, label: 'Settings', path: '/settings' }
-    ];
+    const sidebarItems = user?.role === 'employer'
+        ? [
+            { icon: Home, label: 'Dashboard', path: '/dashboard' },
+            { icon: Building2, label: 'Company Profile', path: '/employer-profile' },
+            { icon: Briefcase, label: 'Job Listings', path: '/jobs' },
+            { icon: PlusSquare, label: 'Post A Role', path: '/jobs' },
+            { icon: Settings, label: 'Settings', path: '/settings' }
+        ]
+        : [
+            { icon: Home, label: 'Dashboard', path: '/dashboard' },
+            { icon: User, label: 'Profile', path: '/profile' },
+            { icon: Briefcase, label: 'Jobs', path: '/jobs' },
+            { icon: Settings, label: 'Settings', path: '/settings' }
+        ];
 
     if (!user) return <div className="text-center py-8">Loading...</div>;
 
@@ -93,13 +98,13 @@ const DashboardLayout = ({ children }) => {
                         <Menu size={24} />
                     </button>
                     <div className="header-search">
-                        {['/jobs', '/training', '/messages'].includes(location.pathname) ? null : (
+                        {location.pathname === '/jobs' ? null : (
                             <div style={{ position: 'relative' }}>
                                 <Search className="header-search-icon" size={16} />
                                 <input
                                     type="text"
                                     className="header-search-input"
-                                    placeholder="Search..."
+                                    placeholder={user?.role === 'employer' ? 'Search your workspace...' : 'Search...'}
                                 />
                             </div>
                         )}
@@ -108,7 +113,7 @@ const DashboardLayout = ({ children }) => {
                         <button className="header-notification-btn">
                             <Bell size={20} />
                         </button>
-                        <button className="header-avatar-btn" onClick={() => navigate('/profile')}>
+                        <button className="header-avatar-btn" onClick={() => navigate(profilePath)} title="Open profile">
                             {user?.name ? user.name[0].toUpperCase() : <User size={20} />}
                         </button>
                     </div>

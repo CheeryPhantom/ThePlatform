@@ -4,7 +4,13 @@ import Employer from '../models/Employer.js';
 const employerSchema = Joi.object({
   company_name: Joi.string().required(),
   website: Joi.string().uri().allow(''),
-  bio: Joi.string().allow('')
+  bio: Joi.string().allow(''),
+  logo_url: Joi.string().uri().allow(''),
+  location: Joi.string().allow(''),
+  industry: Joi.string().allow(''),
+  company_size: Joi.string().allow(''),
+  founded_year: Joi.number().integer().min(1800).max(new Date().getFullYear()).allow(null),
+  verified: Joi.boolean().optional()
 });
 
 export const getEmployerProfile = async (req, res) => {
