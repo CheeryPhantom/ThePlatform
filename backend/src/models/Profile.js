@@ -1,44 +1,87 @@
 import { db } from '../db.js';
 
+const COLUMNS = [
+  'first_name',
+  'middle_name',
+  'last_name',
+  'full_name',
+  'phone',
+  'headline',
+  'date_of_birth',
+  'gender',
+  'province_code',
+  'district_code',
+  'municipality_code',
+  'ward_number',
+  'address_line',
+  'postal_code',
+  'country_code',
+  'experience_years',
+  'skills',
+  'linkedin_url',
+  'github_url',
+  'portfolio_url',
+  'preferred_title',
+  'availability',
+  'work_authorization',
+  'preferences'
+];
+
+const nullish = (v) => (v === '' || v === undefined ? null : v);
+
+const pickRow = (data) => {
+  const row = {};
+  for (const col of COLUMNS) {
+    if (Object.prototype.hasOwnProperty.call(data, col)) {
+      let value = data[col];
+      if (col === 'preferences') value = value == null ? null : JSON.stringify(value);
+      else if (col === 'skills') value = Array.isArray(value) ? value : null;
+      else value = nullish(value);
+      row[col] = value;
+    }
+  }
+  return row;
+};
+
 class Profile {
   static async findByUserId(userId) {
-    const query = 'SELECT * FROM user_profiles WHERE user_id = $1';
-    const result = await db.query(query, [userId]);
+    const result = await db.query('SELECT * FROM user_profiles WHERE user_id = $1', [userId]);
     return result.rows[0];
   }
 
   static async create(userId, profileData) {
-    const { full_name, headline, location, experience_years, skills, certifications, resume_url, preferences } = profileData;
+    const row = pickRow(profileData);
+    const cols = ['user_id', ...Object.keys(row)];
+    const placeholders = cols.map((_, i) => `$${i + 1}`).join(', ');
+    const values = [userId, ...Object.values(row)];
     const query = `
-      INSERT INTO user_profiles (user_id, full_name, headline, location, experience_years, skills, certifications, resume_url, preferences)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO user_profiles (${cols.join(', ')})
+      VALUES (${placeholders})
       RETURNING *
     `;
-    const values = [userId, full_name, headline, location, experience_years, skills, certifications, resume_url, preferences];
     const result = await db.query(query, values);
     return result.rows[0];
   }
 
   static async update(userId, profileData) {
-    const { full_name, headline, location, experience_years, skills, certifications, resume_url, preferences } = profileData;
+    const row = pickRow(profileData);
+    const keys = Object.keys(row);
+    if (!keys.length) return this.findByUserId(userId);
+    const sets = keys.map((k, i) => `${k} = $${i + 1}`).join(', ');
+    const values = [...Object.values(row), userId];
     const query = `
       UPDATE user_profiles
-      SET full_name = $1, headline = $2, location = $3, experience_years = $4, skills = $5, certifications = $6, resume_url = $7, preferences = $8, updated_at = now()
-      WHERE user_id = $9
-      RETURNING *
+         SET ${sets}, updated_at = now()
+       WHERE user_id = $${keys.length + 1}
+       RETURNING *
     `;
-    const values = [full_name, headline, location, experience_years, skills, certifications, resume_url, preferences, userId];
     const result = await db.query(query, values);
     return result.rows[0];
   }
 
   static async upsert(userId, profileData) {
     const existing = await this.findByUserId(userId);
-    if (existing) {
-      return this.update(userId, profileData);
-    } else {
-      return this.create(userId, profileData);
-    }
+    return existing ? this.update(userId, profileData) : this.create(userId, profileData);
   }
 }
 

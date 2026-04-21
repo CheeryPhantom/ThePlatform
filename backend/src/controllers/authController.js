@@ -1,10 +1,25 @@
 import Joi from 'joi';
 import { User } from '../models/User.js';
 
+// Password policy: min 8 chars, at least one uppercase letter, one digit,
+// one special char. Mirrored on the frontend Register component.
+const strongPassword = Joi.string()
+  .min(8)
+  .max(128)
+  .pattern(/[A-Z]/, 'uppercase')
+  .pattern(/\d/, 'digit')
+  .pattern(/[!@#$%^&*(),.?":{}|<>_\-\[\]\\/`~+=;']/, 'special')
+  .required()
+  .messages({
+    'string.min': 'Password must be at least 8 characters',
+    'string.max': 'Password must be at most 128 characters',
+    'string.pattern.name': 'Password must contain at least one {#name}'
+  });
+
 const registerSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().min(6).required(),
-  name: Joi.string().required(),
+  email: Joi.string().email().max(254).required(),
+  password: strongPassword,
+  name: Joi.string().trim().min(2).max(120).required(),
   role: Joi.string().valid('candidate', 'employer', 'admin').default('candidate')
 });
 

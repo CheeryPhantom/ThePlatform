@@ -6,6 +6,11 @@ import authRoutes from "./routes/auth.js";
 import usersRoutes from "./routes/users.js";
 import jobsRoutes from "./routes/jobs.js";
 import employersRoutes from "./routes/employers.js";
+import locationsRoutes from "./routes/locations.js";
+import skillsRoutes from "./routes/skills.js";
+import uploadsRoutes from "./routes/uploads.js";
+import certificationsRoutes from "./routes/certifications.js";
+import trainingRoutes from "./routes/training.js";
 
 dotenv.config();
 
@@ -43,8 +48,13 @@ app.get("/db-test", async (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", usersRoutes);
+app.use("/api/users/uploads", uploadsRoutes);
 app.use("/api/jobs", jobsRoutes);
 app.use("/api/employers", employersRoutes);
+app.use("/api/locations", locationsRoutes);
+app.use("/api/skills", skillsRoutes);
+app.use("/api/certifications", certificationsRoutes);
+app.use("/api/training", trainingRoutes);
 
 const PORT = process.env.PORT || 4000;
 

@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "version": "1.0.0",
+    "note": "Curated skills taxonomy. Add via PR. Frontend autocompletes against this list; employers and candidates tag jobs and profiles consistently."
+  },
+  "categories": [
+    {
+      "key": "programming_languages",
+      "label": "Programming Languages",
+      "skills": [
+        "JavaScript", "TypeScript", "Python", "Java", "Kotlin", "C", "C++", "C#",
+        "Go", "Rust", "Ruby", "PHP", "Swift", "Dart", "Scala", "R", "MATLAB",
+        "SQL", "Bash", "PowerShell", "Elixir", "Clojure", "Haskell", "Perl", "Lua"
+      ]
+    },
+    {
+      "key": "web_frontend",
+      "label": "Web Frontend",
+      "skills": [
+        "React", "Next.js", "Vue.js", "Nuxt.js", "Angular", "Svelte", "SvelteKit",
+        "HTML5", "CSS3", "Sass", "Tailwind CSS", "Bootstrap", "Material UI",
+        "Chakra UI", "Redux", "Zustand", "React Query", "Webpack", "Vite", "ESBuild",
+        "Three.js", "D3.js", "Storybook", "Web Components", "Accessibility (a11y)"
+      ]
+    },
+    {
+      "key": "web_backend",
+      "label": "Web Backend",
+      "skills": [
+        "Node.js", "Express", "NestJS", "Fastify", "Django", "Flask", "FastAPI",
+        "Spring Boot", "Laravel", "Ruby on Rails", "ASP.NET Core", "Phoenix",
+        "Gin", "REST APIs", "GraphQL", "gRPC", "WebSockets", "Microservices",
+        "Serverless", "Hono", "Koa"
+      ]
+    },
+    {
+      "key": "mobile",
+      "label": "Mobile",
+      "skills": [
+        "React Native", "Flutter", "Swift / iOS", "Kotlin / Android", "Jetpack Compose",
+        "SwiftUI", "Expo", "Ionic", "Android SDK", "iOS SDK", "Firebase"
+      ]
+    },
+    {
+      "key": "data_databases",
+      "label": "Databases & Data",
+      "skills": [
+        "PostgreSQL", "MySQL", "SQLite", "MongoDB", "Redis", "Elasticsearch",
+        "OpenSearch", "DynamoDB", "Cassandra", "Neo4j", "ClickHouse", "BigQuery",
+        "Snowflake", "Supabase", "Firebase Firestore", "Prisma", "Drizzle",
+        "SQLAlchemy", "TypeORM", "Sequelize", "Data Modelling", "Database Indexing"
+      ]
+    },
+    {
+      "key": "data_analytics_ml",
+      "label": "Data, ML & AI",
+      "skills": [
+        "Pandas", "NumPy", "SciPy", "scikit-learn", "TensorFlow", "PyTorch",
+        "Keras", "Hugging Face Transformers", "LangChain", "LlamaIndex",
+        "Prompt Engineering", "LLM Fine-tuning", "Vector Databases", "Embeddings",
+        "OpenAI API", "Anthropic Claude API", "Data Visualization", "Tableau",
+        "Power BI", "dbt", "Apache Spark", "Apache Airflow", "ETL", "Statistics",
+        "A/B Testing", "Computer Vision", "NLP", "Reinforcement Learning"
+      ]
+    },
+    {
+      "key": "devops_cloud",
+      "label": "DevOps & Cloud",
+      "skills": [
+        "Docker", "Kubernetes", "Helm", "Terraform", "Ansible", "AWS", "GCP",
+        "Azure", "Vercel", "Netlify", "Cloudflare", "CI/CD", "GitHub Actions",
+        "GitLab CI", "Jenkins", "CircleCI", "Linux Administration", "Nginx",
+        "Apache", "Monitoring (Prometheus/Grafana)", "Datadog", "Sentry",
+        "Logging (ELK)", "Site Reliability Engineering"
+      ]
+    },
+    {
+      "key": "security",
+      "label": "Security",
+      "skills": [
+        "OWASP Top 10", "Penetration Testing", "Ethical Hacking",
+        "Secure Coding", "Cryptography", "OAuth 2.0", "JWT", "SSO / SAML",
+        "Network Security", "Incident Response", "SOC Analysis",
+        "Vulnerability Assessment", "Kali Linux", "Burp Suite", "Wireshark"
+      ]
+    },
+    {
+      "key": "design_creative",
+      "label": "Design & Creative",
+      "skills": [
+        "UI Design", "UX Research", "Figma", "Adobe XD", "Sketch", "Photoshop",
+        "Illustrator", "InDesign", "After Effects", "Premiere Pro", "Blender",
+        "3D Modelling", "Motion Graphics", "Design Systems", "Prototyping",
+        "Wireframing", "Typography", "Brand Identity"
+      ]
+    },
+    {
+      "key": "product_pm",
+      "label": "Product & Project",
+      "skills": [
+        "Product Management", "Product Strategy", "Roadmapping", "User Research",
+        "Scrum", "Kanban", "Agile", "Jira", "Confluence", "Notion", "Linear",
+        "Stakeholder Management", "OKRs", "Competitive Analysis", "Go-to-Market",
+        "PRD Writing", "A/B Testing", "Product Analytics"
+      ]
+    },
+    {
+      "key": "marketing_growth",
+      "label": "Marketing & Growth",
+      "skills": [
+        "Digital Marketing", "SEO", "SEM", "Google Ads", "Meta Ads",
+        "Content Marketing", "Copywriting", "Social Media Marketing",
+        "Email Marketing", "Marketing Automation", "HubSpot", "Mailchimp",
+        "Google Analytics 4", "Growth Hacking", "Performance Marketing",
+        "Conversion Rate Optimization", "Affiliate Marketing"
+      ]
+    },
+    {
+      "key": "business_ops",
+      "label": "Business & Operations",
+      "skills": [
+        "Business Analysis", "Operations Management", "Supply Chain",
+        "Logistics", "Vendor Management", "Process Improvement", "Six Sigma",
+        "Lean", "Customer Success", "Account Management", "Sales (B2B)",
+        "Sales (B2C)", "Inside Sales", "Negotiation", "Public Speaking"
+      ]
+    },
+    {
+      "key": "finance_accounting",
+      "label": "Finance & Accounting",
+      "skills": [
+        "Financial Modelling", "Bookkeeping", "Tax Compliance", "Audit",
+        "QuickBooks", "Tally", "SAP", "Payroll", "Budgeting", "Forecasting",
+        "Investment Analysis", "Equity Research", "Corporate Finance",
+        "Risk Management", "Financial Reporting"
+      ]
+    },
+    {
+      "key": "writing_content",
+      "label": "Writing & Content",
+      "skills": [
+        "Technical Writing", "Copywriting", "Editing", "Proofreading",
+        "Translation (Nepali ↔ English)", "Localization", "Journalism",
+        "Blogging", "Scriptwriting", "Ghostwriting"
+      ]
+    },
+    {
+      "key": "human_resources",
+      "label": "Human Resources",
+      "skills": [
+        "Talent Acquisition", "Recruiting", "Employer Branding", "HR Operations",
+        "Onboarding", "Compensation & Benefits", "HRIS", "Learning & Development",
+        "Employee Engagement", "Performance Management", "Labour Law (Nepal)"
+      ]
+    },
+    {
+      "key": "languages_human",
+      "label": "Human Languages",
+      "skills": [
+        "English (Business)", "Nepali", "Hindi", "Newari", "Maithili", "Bhojpuri",
+        "Japanese", "Korean", "Mandarin", "Spanish", "French", "German", "Arabic"
+      ]
+    }
+  ]
+}
