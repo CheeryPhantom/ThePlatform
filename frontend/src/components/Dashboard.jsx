@@ -6,101 +6,53 @@ import {
   TrendingDown,
   Target,
   CheckCircle,
-  ClipboardCheck,
   User,
-  GraduationCap,
-  FileText,
-  Briefcase
+  Briefcase,
+  Building2,
+  Eye,
+  Users,
+  PlusSquare
 } from 'lucide-react';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
+  const isEmployer = user?.role === 'employer';
 
   const goToProfile = () => {
-    if (user.role === 'employer') {
+    if (isEmployer) {
       navigate('/employer-profile');
     } else {
       navigate('/profile');
     }
   };
 
-  // Mock stats data with proper icons and colors
-  const stats = [
-    {
-      label: 'Applied Jobs',
-      value: '12',
-      change: '+8% this week',
-      changeType: 'positive',
-      icon: TrendingUp,
-      className: 'stat-applied'
-    },
-    {
-      label: 'Profile Views',
-      value: '47',
-      change: '+12 today',
-      changeType: 'positive',
-      icon: TrendingUp,
-      className: 'stat-views'
-    },
-    {
-      label: 'Skill Score',
-      value: '85/100',
-      change: 'Strong Match',
-      changeType: 'neutral',
-      icon: Target,
-      className: 'stat-score'
-    },
-    {
-      label: 'Assessment',
-      value: '3 of 5',
-      change: 'Complete',
-      changeType: 'neutral',
-      icon: CheckCircle,
-      className: 'stat-assessment'
-    }
-  ];
+  const stats = isEmployer
+    ? [
+        { label: 'Open Roles', value: '0', change: 'Ready to publish', changeType: 'neutral', icon: Briefcase, className: 'stat-applied' },
+        { label: 'Company Profile', value: '70%', change: 'Complete key details', changeType: 'positive', icon: Building2, className: 'stat-views' },
+        { label: 'Candidate Views', value: '0', change: 'No live jobs yet', changeType: 'neutral', icon: Eye, className: 'stat-score' },
+        { label: 'Applicants', value: '0', change: 'Will appear here', changeType: 'neutral', icon: Users, className: 'stat-assessment' }
+      ]
+    : [
+        { label: 'Applied Jobs', value: '12', change: '+8% this week', changeType: 'positive', icon: TrendingUp, className: 'stat-applied' },
+        { label: 'Profile Views', value: '47', change: '+12 today', changeType: 'positive', icon: TrendingUp, className: 'stat-views' },
+        { label: 'Skill Score', value: '85/100', change: 'Strong Match', changeType: 'neutral', icon: Target, className: 'stat-score' },
+        { label: 'Profile Status', value: '3 of 5', change: 'Complete', changeType: 'neutral', icon: CheckCircle, className: 'stat-assessment' }
+      ];
 
-  const quickActions = [
-    {
-      title: 'Complete Your Assessment',
-      description: 'Take the skills assessment to improve job matches',
-      action: 'Start Assessment',
-      icon: ClipboardCheck,
-      primary: true,
-      path: '/assessment'
-    },
-    {
-      title: 'Update Your Profile',
-      description: 'Keep your profile current with latest skills',
-      action: 'Edit Profile',
-      icon: User,
-      primary: false,
-      path: user.role === 'employer' ? '/employer-profile' : '/profile'
-    },
-    {
-      title: 'Browse Training Courses',
-      description: 'Learn new skills to boost your score',
-      action: 'View Courses',
-      icon: GraduationCap,
-      primary: false,
-      path: '/training'
-    },
-    {
-      title: 'Upload Resume',
-      description: 'Add your resume for better visibility',
-      action: 'Upload',
-      icon: FileText,
-      primary: false,
-      path: user.role === 'employer' ? '/employer-profile' : '/profile'
-    }
-  ];
+  const quickActions = isEmployer
+    ? [
+        { title: 'Complete Company Profile', description: 'Add the details candidates need before they trust your roles.', action: 'Edit Company', icon: Building2, primary: true, path: '/employer-profile' },
+        { title: 'Review Job Listings', description: 'See employer-owned listings instead of the candidate job feed.', action: 'View Listings', icon: Briefcase, primary: false, path: '/jobs' },
+        { title: 'Prepare A New Role', description: 'Posting flow is next, but the employer workspace should already feel distinct.', action: 'Open Listings', icon: PlusSquare, primary: false, path: '/jobs' }
+      ]
+    : [
+        { title: 'Complete Your Profile', description: 'Keep your profile current so employers can evaluate you quickly.', action: 'Edit Profile', icon: User, primary: true, path: '/profile' },
+        { title: 'Browse Jobs', description: 'Explore relevant opportunities and prepare for live applications.', action: 'View Jobs', icon: Briefcase, primary: false, path: '/jobs' },
+        { title: 'Strengthen Your Positioning', description: 'Assessment and training can follow once the hiring loop is wired.', action: 'Stay Focused', icon: Target, primary: false, path: '/dashboard' }
+      ];
 
   if (!user) return <div className="text-center py-8">Loading...</div>;
 
@@ -112,18 +64,18 @@ const Dashboard = () => {
           <div>
             <h1 className="welcome-title">Welcome back, {user.name}!</h1>
             <div className="assessment-progress">
-              <span className="progress-label">Your profile completion: 60%</span>
+              <span className="progress-label">{isEmployer ? 'Your company profile completion: 70%' : 'Your profile completion: 60%'}</span>
               <div className="progress-bar-container">
-                <div className="progress-bar-fill" style={{ width: '60%' }}></div>
+                <div className="progress-bar-fill" style={{ width: isEmployer ? '70%' : '60%' }}></div>
               </div>
             </div>
           </div>
           <div className="welcome-actions">
             <button onClick={goToProfile} className="btn btn-primary">
-              Complete Your Profile
+              {isEmployer ? 'Complete Company Profile' : 'Complete Your Profile'}
             </button>
             <button onClick={() => navigate('/jobs')} className="btn btn-secondary">
-              Browse Jobs
+              {isEmployer ? 'Manage Job Listings' : 'Browse Jobs'}
             </button>
           </div>
         </div>
@@ -169,12 +121,14 @@ const Dashboard = () => {
         <div className="empty-state-icon">
           <Briefcase size={120} />
         </div>
-        <h2 className="empty-state-title">Complete Your Assessment</h2>
+        <h2 className="empty-state-title">{isEmployer ? 'Your Hiring Workspace Starts Here' : 'Recommended Jobs Will Show Here'}</h2>
         <p className="empty-state-description">
-          Job recommendations will appear here based on your assessment results.
+          {isEmployer
+            ? 'Use the employer profile and listings workspace to present a clean recruiting story. Posting and applicant management are the next phase.'
+            : 'Once jobs are connected to live backend data, this area can surface stronger candidate recommendations.'}
         </p>
-        <button className="btn btn-primary empty-state-btn" onClick={() => navigate('/assessment')}>
-          Take Assessment
+        <button className="btn btn-primary empty-state-btn" onClick={() => navigate(isEmployer ? '/employer-profile' : '/jobs')}>
+          {isEmployer ? 'Open Company Profile' : 'Open Jobs'}
         </button>
       </section>
     </DashboardLayout>

@@ -1,62 +1,97 @@
-# Deploying The Platform to Vercel
+# Deploy The Platform with Supabase + Vercel
 
-This guide outlines the steps to deploy both the Frontend and Backend of **The Platform** to Vercel.
+This guide configures a production-ready stack:
+- **Frontend (Vite/React)** on Vercel
+- **Backend (Express API)** on Vercel
+- **Database (Supabase Postgres)** for user signup/login and profile persistence
 
-## Prerequisites
+## 1) Create a Supabase project
 
-1.  **Vercel Account**: Sign up at [vercel.com](https://vercel.com).
-2.  **GitHub Repository**: Push your code to a GitHub repository.
+1. Go to [https://supabase.com/dashboard](https://supabase.com/dashboard) and create a new project.
+2. Choose a strong database password and save it securely.
+3. Wait for project provisioning to complete.
 
-## 1. Database Setup (Vercel Postgres)
+## 2) Get the correct Postgres connection string
 
-Since we are deploying to a serverless environment, we need a cloud-hosted database. Vercel Postgres is a convenient option.
+In Supabase, open:
+- **Project Settings → Database → Connection string**
 
-1.  **Go to your Vercel Dashboard**: Navigate to [https://vercel.com/dashboard](https://vercel.com/dashboard).
-2.  **Create Store**:
-    *   Click on the **Storage** tab at the top of the page.
-    *   Click the **Create Database** button.
-    *   Select **Postgres** (Serverless SQL) and click **Continue**.
-3.  **Configuration**:
-    *   **Store Name**: Enter a name like `the-platform-db`.
-    *   **Region**: Select a region close to your users (e.g., `Washington, D.C. (iad1)`).
-    *   Click **Create**.
-4.  **Get Connection Details**:
-    *   Once the database is created, you will be taken to its specific page.
-    *   On the left sidebar, click **.env.local**.
-    *   Click the **Copy Snippet** button or manually copy the `POSTGRES_URL` value.
-5.  **Initialize the Database** (Running the Schema):
-    *   You need to create the tables in this new cloud database. The easiest way is to connect to it from your local machine.
-    *   **Option A (Terminal)**: If you have `psql` installed, run:
-        ```bash
-        psql "YOUR_COPIED_POSTGRES_URL" -f db/schema.sql
-        ```
-    *   **Option B (GUI)**: Use a tool like [TablePlus](https://tableplus.com/). Create a new connection using the connection string (Import from URL), paste your `POSTGRES_URL`, connect, and then open the SQL editor. Copy-paste the content of `db/schema.sql` and run all.
+Use the **Transaction Pooler** URL (port `6543`) for Vercel serverless functions, for example:
 
-## 2. Backend Deployment
+```bash
+postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres
+```
 
-1.  Go to **Vercel Dashboard** -> **Add New...** -> **Project**.
-2.  Import your GitHub repository.
-3.  **Configure Project**:
-    *   **Root Directory**: Click `Edit` and select `backend`.
-    *   **Framework Preset**: Select `Other`.
-    *   **Environment Variables**: Add the following:
-        *   `DATABASE_URL`: The value from step 1.
-        *   `JWT_SECRET`: Any long random string.
-        *   `NODE_ENV`: `production`
-4.  Click **Deploy**.
-5.  Once deployed, note the **Domains** URL (e.g., `https://the-platform-backend.vercel.app`).
+Set this as `DATABASE_URL` in backend environment variables.
 
-## 3. Frontend Deployment
+## 3) Initialize database schema in Supabase
 
-1.  Go to **Vercel Dashboard** -> **Add New...** -> **Project**.
-2.  Import the **same** GitHub repository again.
-3.  **Configure Project**:
-    *   **Root Directory**: Click `Edit` and select `frontend`.
-    *   **Framework Preset**: Vercel should auto-detect `Vite`.
-    *   **Environment Variables**: Add the following:
-        *   `VITE_API_URL`: The Backend URL from Step 2 (e.g., `https://the-platform-backend.vercel.app`).
-4.  Click **Deploy**.
+Run the schema once against your Supabase database:
 
-## 4. Updates
+```bash
+psql "<SUPABASE_DATABASE_URL>" -f db/schema.sql
+```
 
-When you push changes to `main`, Vercel will automatically redeploy the affected projects.
+Optional seed data:
+
+```bash
+psql "<SUPABASE_DATABASE_URL>" -f db/seed.sql
+```
+
+## 4) Deploy backend to Vercel
+
+1. In Vercel: **Add New → Project**.
+2. Import this repository.
+3. Set **Root Directory** to `backend`.
+4. Framework: `Other`.
+5. Add environment variables:
+   - `DATABASE_URL` = Supabase transaction pooler URL
+   - `JWT_SECRET` = long random secret (at least 32 chars)
+   - `NODE_ENV` = `production`
+   - `CORS_ORIGIN` = your frontend URL(s), comma-separated
+   - `DB_SSL` = `true`
+   - `DB_SSL_REJECT_UNAUTHORIZED` = `false`
+6. Deploy and copy backend domain, for example:
+   - `https://the-platform-api.vercel.app`
+
+## 5) Deploy frontend to Vercel
+
+1. In Vercel, add the same repository as a second project.
+2. Set **Root Directory** to `frontend`.
+3. Framework preset should auto-detect **Vite**.
+4. Add environment variable:
+   - `VITE_API_URL` = `https://the-platform-api.vercel.app/api`
+5. Deploy.
+
+## 6) Verify auth + profile data flow
+
+After deployments:
+1. Open frontend URL.
+2. Register a new account.
+3. Login with the same credentials.
+4. Confirm backend handles `/api/auth/register`, `/api/auth/login`, and `/api/auth/me`.
+5. In Supabase SQL editor, verify user record:
+
+```sql
+select id, email, name, role, created_at from users order by created_at desc;
+```
+
+## 7) Security checklist (recommended)
+
+- Use a strong `JWT_SECRET` and rotate periodically.
+- Restrict backend CORS via `CORS_ORIGIN` to known frontend domains.
+- Keep `DATABASE_URL` only on backend, never expose it to frontend.
+- Passwords are hashed with bcrypt before storage (never plaintext).
+- Keep Supabase credentials in Vercel env vars, not in code.
+- Enable branch protection and required reviews before production merges.
+
+## 8) Local development env setup
+
+Copy example files:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+Then fill values and run local apps.

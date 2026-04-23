@@ -1,108 +1,106 @@
 import { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import SkillTag from './SkillTag';
-import { Search, MapPin, DollarSign, Clock, Bookmark, ArrowRight } from 'lucide-react';
+import { Search, MapPin, DollarSign, Clock, Bookmark, ArrowRight, PlusSquare, FileText, Users, Briefcase } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import './JobList.css';
 
+const candidateJobs = [
+  {
+    id: 1,
+    title: 'Senior Full Stack Developer',
+    company: 'TechCorp Inc.',
+    companyLogo: 'TC',
+    location: 'New York, NY',
+    salary: '$120k - $150k',
+    type: 'Full-time',
+    matchPercentage: 85,
+    description: 'We are looking for an experienced full stack developer to join our growing team...',
+    posted: '2 days ago',
+    applicants: 24,
+    yourSkills: [
+      { name: 'React', level: 'exact' },
+      { name: 'Node.js', level: 'strong' },
+      { name: 'PostgreSQL', level: 'strong' }
+    ],
+    skillsToLearn: [
+      { name: 'GraphQL', level: 'learning' },
+      { name: 'Docker', level: 'learning' }
+    ]
+  },
+  {
+    id: 2,
+    title: 'Frontend React Developer',
+    company: 'StartupXYZ',
+    companyLogo: 'SX',
+    location: 'San Francisco, CA',
+    salary: '$90k - $120k',
+    type: 'Full-time',
+    matchPercentage: 92,
+    description: 'Join our innovative startup as a React developer...',
+    posted: '1 week ago',
+    applicants: 18,
+    yourSkills: [
+      { name: 'React', level: 'exact' },
+      { name: 'TypeScript', level: 'exact' },
+      { name: 'CSS', level: 'strong' }
+    ],
+    skillsToLearn: []
+  },
+  {
+    id: 3,
+    title: 'DevOps Engineer',
+    company: 'CloudTech Solutions',
+    companyLogo: 'CT',
+    location: 'Remote',
+    salary: '$100k - $130k',
+    type: 'Full-time',
+    matchPercentage: 45,
+    description: 'Manage our cloud infrastructure and CI/CD pipelines...',
+    posted: '3 days ago',
+    applicants: 31,
+    yourSkills: [
+      { name: 'AWS', level: 'partial' },
+      { name: 'Linux', level: 'strong' }
+    ],
+    skillsToLearn: [
+      { name: 'Kubernetes', level: 'learning' },
+      { name: 'Terraform', level: 'learning' },
+      { name: 'Docker', level: 'learning' }
+    ]
+  }
+];
+
+const employerListings = [
+  {
+    id: 1,
+    title: 'Frontend Engineer',
+    status: 'Draft',
+    location: 'Remote',
+    applicants: 0,
+    updated: 'Just now'
+  },
+  {
+    id: 2,
+    title: 'Operations Analyst',
+    status: 'Planned',
+    location: 'Kathmandu',
+    applicants: 0,
+    updated: '1 day ago'
+  }
+];
+
 const JobList = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [location, setLocation] = useState('');
   const [sortBy, setSortBy] = useState('best-match');
+  const isEmployer = user?.role === 'employer';
 
-  // Mock job data with match information
-  const jobs = [
-    {
-      id: 1,
-      title: 'Senior Full Stack Developer',
-      company: 'TechCorp Inc.',
-      companyLogo: 'TC',
-      location: 'New York, NY',
-      salary: '$120k - $150k',
-      type: 'Full-time',
-      matchPercentage: 85,
-      description: 'We are looking for an experienced full stack developer to join our growing team...',
-      posted: '2 days ago',
-      applicants: 24,
-      yourSkills: [
-        { name: 'React', level: 'exact' },
-        { name: 'Node.js', level: 'strong' },
-        { name: 'PostgreSQL', level: 'strong' }
-      ],
-      skillsToLearn: [
-        { name: 'GraphQL', level: 'learning' },
-        { name: 'Docker', level: 'learning' }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Frontend React Developer',
-      company: 'StartupXYZ',
-      companyLogo: 'SX',
-      location: 'San Francisco, CA',
-      salary: '$90k - $120k',
-      type: 'Full-time',
-      matchPercentage: 92,
-      description: 'Join our innovative startup as a React developer...',
-      posted: '1 week ago',
-      applicants: 18,
-      yourSkills: [
-        { name: 'React', level: 'exact' },
-        { name: 'TypeScript', level: 'exact' },
-        { name: 'CSS', level: 'strong' }
-      ],
-      skillsToLearn: []
-    },
-    {
-      id: 3,
-      title: 'DevOps Engineer',
-      company: 'CloudTech Solutions',
-      companyLogo: 'CT',
-      location: 'Remote',
-      salary: '$100k - $130k',
-      type: 'Full-time',
-      matchPercentage: 45,
-      description: 'Manage our cloud infrastructure and CI/CD pipelines...',
-      posted: '3 days ago',
-      applicants: 31,
-      yourSkills: [
-        { name: 'AWS', level: 'partial' },
-        { name: 'Linux', level: 'strong' }
-      ],
-      skillsToLearn: [
-        { name: 'Kubernetes', level: 'learning' },
-        { name: 'Terraform', level: 'learning' },
-        { name: 'Docker', level: 'learning' }
-      ]
-    },
-    {
-      id: 4,
-      title: 'Product Manager',
-      company: 'InnovateLabs',
-      companyLogo: 'IL',
-      location: 'Austin, TX',
-      salary: '$110k - $140k',
-      type: 'Full-time',
-      matchPercentage: 78,
-      description: 'Lead product development from ideation to launch...',
-      posted: '5 days ago',
-      applicants: 12,
-      yourSkills: [
-        { name: 'Product Strategy', level: 'strong' },
-        { name: 'Agile', level: 'exact' },
-        { name: 'Analytics', level: 'strong' }
-      ],
-      skillsToLearn: [
-        { name: 'SQL', level: 'learning' }
-      ]
-    }
-  ];
-
-  const filteredJobs = jobs.filter(job =>
+  const filteredJobs = candidateJobs.filter((job) =>
     job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     job.company.toLowerCase().includes(searchTerm.toLowerCase())
-  ).filter(job =>
-    job.location.toLowerCase().includes(location.toLowerCase())
-  );
+  ).filter((job) => job.location.toLowerCase().includes(location.toLowerCase()));
 
   const getMatchBarClass = (percentage) => {
     if (percentage >= 90) return 'exact';
@@ -125,145 +123,221 @@ const JobList = () => {
     <DashboardLayout>
       <div className="job-list-page">
         <div className="job-list-header">
-          <h1>Find Your Dream Job</h1>
-          <p>Discover opportunities that match your skills and experience</p>
+          <h1>{isEmployer ? 'Manage Your Job Listings' : 'Find Your Dream Job'}</h1>
+          <p>
+            {isEmployer
+              ? 'This view stays employer-specific so you are not dropped into candidate browsing screens.'
+              : 'Discover opportunities that match your skills and experience.'}
+          </p>
         </div>
 
         <div className="job-list-content">
-          {/* Search Filters */}
-          <section className="search-filters-section">
-            <div className="search-filters-card">
-              <div className="search-filters-grid">
-                <div className="search-input-group">
-                  <Search className="search-input-icon" size={20} />
-                  <input
-                    type="text"
-                    className="search-input"
-                    placeholder="Search jobs..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
+          {isEmployer ? (
+            <>
+              <section className="search-filters-section">
+                <div className="search-filters-card employer-summary-grid">
+                  <div className="employer-summary-card">
+                    <Briefcase size={22} />
+                    <div>
+                      <strong>2 listings staged</strong>
+                      <span>Keep this workspace focused on employer-owned roles.</span>
+                    </div>
+                  </div>
+                  <div className="employer-summary-card">
+                    <Users size={22} />
+                    <div>
+                      <strong>0 applicants yet</strong>
+                      <span>Applicant review comes after real posting is wired.</span>
+                    </div>
+                  </div>
+                  <div className="employer-summary-card">
+                    <PlusSquare size={22} />
+                    <div>
+                      <strong>Posting flow next</strong>
+                      <span>This branch now clearly separates employer management from candidate browsing.</span>
+                    </div>
+                  </div>
                 </div>
-                <input
-                  type="text"
-                  className="location-input"
-                  placeholder="Location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                />
-                <select
-                  className="sort-select"
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                >
-                  <option value="best-match">Best Match</option>
-                  <option value="most-recent">Most Recent</option>
-                  <option value="highest-salary">Highest Salary</option>
-                </select>
-              </div>
-            </div>
-          </section>
+              </section>
 
-          {/* Jobs Grid */}
-          <section className="jobs-section">
-            <div className="jobs-grid">
-              {filteredJobs.map(job => (
-                <div key={job.id} className="job-card">
-                  <div className="job-card-header">
-                    <div className="company-info">
-                      <div className="company-logo">{job.companyLogo}</div>
-                      <div className="company-details">
-                        <h3>{job.company}</h3>
+              <section className="jobs-section">
+                <div className="jobs-grid employer-jobs-grid">
+                  {employerListings.map((job) => (
+                    <div key={job.id} className="job-card employer-job-card">
+                      <div className="job-card-header">
+                        <div className="company-info">
+                          <div className="company-logo">{job.title.slice(0, 2).toUpperCase()}</div>
+                          <div className="company-details">
+                            <h3>{job.title}</h3>
+                            <p className="job-card-subtitle">{job.status} listing</p>
+                          </div>
+                        </div>
+                        <span className="job-status-badge">{job.status}</span>
+                      </div>
+
+                      <div className="job-meta">
+                        <div className="job-meta-item">
+                          <MapPin className="job-meta-icon" size={16} />
+                          {job.location}
+                        </div>
+                        <div className="job-meta-item">
+                          <Users className="job-meta-icon" size={16} />
+                          {job.applicants} applicants
+                        </div>
+                        <div className="job-meta-item">
+                          <Clock className="job-meta-icon" size={16} />
+                          Updated {job.updated}
+                        </div>
+                      </div>
+
+                      <p className="job-card-description">
+                        This employer-only card is intentionally different from the candidate jobs feed. It keeps the demo focused on company-owned listings instead of a seeker workflow.
+                      </p>
+
+                      <div className="job-card-footer">
+                        <div className="job-stats">Posting and editing tools are next in the next phase.</div>
+                        <div className="job-actions">
+                          <button className="btn btn-secondary">Edit Soon</button>
+                          <button className="btn btn-primary">
+                            Review Listing
+                            <FileText size={16} style={{ marginLeft: '8px' }} />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                    <button className="bookmark-btn" aria-label="Bookmark job">
-                      <Bookmark size={20} />
-                    </button>
-                  </div>
-
-                  <h2 className="job-title">{job.title}</h2>
-
-                  <div className="job-meta">
-                    <div className="job-meta-item">
-                      <MapPin className="job-meta-icon" size={16} />
-                      {job.location}
+                  ))}
+                </div>
+              </section>
+            </>
+          ) : (
+            <>
+              <section className="search-filters-section">
+                <div className="search-filters-card">
+                  <div className="search-filters-grid">
+                    <div className="search-input-group">
+                      <Search className="search-input-icon" size={20} />
+                      <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search jobs..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
                     </div>
-                    <div className="job-meta-item">
-                      <DollarSign className="job-meta-icon" size={16} />
-                      {job.salary}
-                    </div>
-                    <div className="job-meta-item">
-                      <Clock className="job-meta-icon" size={16} />
-                      {job.type}
-                    </div>
-                  </div>
-
-                  <div className="match-section">
-                    <div className="match-bar-container">
-                      <div
-                        className={`match-bar-fill ${getMatchBarClass(job.matchPercentage)}`}
-                        style={{ width: `${job.matchPercentage}%` }}
-                      ></div>
-                    </div>
-                    <span
-                      className="match-percentage"
-                      style={{ color: getMatchColor(getMatchBarClass(job.matchPercentage)) }}
+                    <input
+                      type="text"
+                      className="location-input"
+                      placeholder="Location"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                    />
+                    <select
+                      className="sort-select"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
                     >
-                      {job.matchPercentage}% Match
-                    </span>
-                  </div>
-
-                  {job.yourSkills.length > 0 && (
-                    <div className="skills-section">
-                      <div className="skills-section-title">Your Skills</div>
-                      <div className="skills-tags">
-                        {job.yourSkills.map((skill, index) => (
-                          <SkillTag
-                            key={index}
-                            skill={skill.name}
-                            matchLevel={skill.level}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {job.skillsToLearn.length > 0 && (
-                    <div className="skills-section">
-                      <div className="skills-section-title">Skills to Learn</div>
-                      <div className="skills-tags">
-                        {job.skillsToLearn.map((skill, index) => (
-                          <SkillTag
-                            key={index}
-                            skill={skill.name}
-                            matchLevel={skill.level}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="job-card-footer">
-                    <div className="job-stats">
-                      Posted {job.posted} · {job.applicants} applicants
-                    </div>
-                    <div className="job-actions">
-                      <button className="btn btn-secondary">View Details</button>
-                      <button className="btn btn-primary">
-                        Quick Apply
-                        <ArrowRight size={16} style={{ marginLeft: '8px' }} />
-                      </button>
-                    </div>
+                      <option value="best-match">Best Match</option>
+                      <option value="most-recent">Most Recent</option>
+                      <option value="highest-salary">Highest Salary</option>
+                    </select>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              </section>
 
-          {/* Load More */}
-          <section className="load-more-section">
-            <button className="load-more-btn">Load More Jobs</button>
-          </section>
+              <section className="jobs-section">
+                <div className="jobs-grid">
+                  {filteredJobs.map((job) => (
+                    <div key={job.id} className="job-card">
+                      <div className="job-card-header">
+                        <div className="company-info">
+                          <div className="company-logo">{job.companyLogo}</div>
+                          <div className="company-details">
+                            <h3>{job.company}</h3>
+                          </div>
+                        </div>
+                        <button className="bookmark-btn" aria-label="Bookmark job">
+                          <Bookmark size={20} />
+                        </button>
+                      </div>
+
+                      <div className="job-card-body">
+                        <h2 className="job-title">{job.title}</h2>
+
+                        <div className="job-meta">
+                          <div className="job-meta-item">
+                            <MapPin className="job-meta-icon" size={16} />
+                            {job.location}
+                          </div>
+                          <div className="job-meta-item">
+                            <DollarSign className="job-meta-icon" size={16} />
+                            {job.salary}
+                          </div>
+                          <div className="job-meta-item">
+                            <Clock className="job-meta-icon" size={16} />
+                            {job.type}
+                          </div>
+                        </div>
+
+                        <div className="match-section">
+                          <div className="match-bar-container">
+                            <div
+                              className={`match-bar-fill ${getMatchBarClass(job.matchPercentage)}`}
+                              style={{ width: `${job.matchPercentage}%` }}
+                            ></div>
+                          </div>
+                          <span
+                            className="match-percentage"
+                            style={{ color: getMatchColor(getMatchBarClass(job.matchPercentage)) }}
+                          >
+                            {job.matchPercentage}% Match
+                          </span>
+                        </div>
+
+                        {job.yourSkills.length > 0 && (
+                          <div className="skills-section">
+                            <div className="skills-section-title">Your Skills</div>
+                            <div className="skills-tags">
+                              {job.yourSkills.map((skill, index) => (
+                                <SkillTag key={index} skill={skill.name} matchLevel={skill.level} />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {job.skillsToLearn.length > 0 && (
+                          <div className="skills-section">
+                            <div className="skills-section-title">Skills to Learn</div>
+                            <div className="skills-tags">
+                              {job.skillsToLearn.map((skill, index) => (
+                                <SkillTag key={index} skill={skill.name} matchLevel={skill.level} />
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="job-card-footer">
+                        <div className="job-stats">
+                          Posted {job.posted} · {job.applicants} applicants
+                        </div>
+                        <div className="job-actions">
+                          <button className="btn btn-secondary">View Details</button>
+                          <button className="btn btn-primary">
+                            Quick Apply
+                            <ArrowRight size={16} style={{ marginLeft: '8px' }} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              <section className="load-more-section">
+                <button className="load-more-btn">Load More Jobs</button>
+              </section>
+            </>
+          )}
         </div>
       </div>
     </DashboardLayout>
