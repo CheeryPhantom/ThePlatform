@@ -64,7 +64,10 @@ const TrophyCase = () => {
                 <div className="trophy-body">
                   <h4>{b.label}</h4>
                   <p className="trophy-meta">
-                    {style.label} · {b.source.replaceAll('_', ' ')}
+                    <span className="trophy-tier-chip" style={{ '--tier-color': style.color }}>
+                      {style.label}
+                    </span>
+                    <span className="trophy-source">{b.source.replaceAll('_', ' ')}</span>
                   </p>
                   {b.description && <p className="trophy-desc">{b.description}</p>}
                 </div>
