@@ -1017,8 +1017,29 @@
   margin: 0;
   font-size: 0.75rem;
   color: #6b7280;
-  text-transform: capitalize;
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.trophy-tier-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tier-color, #3b82f6) 15%, white);
+  color: color-mix(in srgb, var(--tier-color, #3b82f6) 80%, #1f2937);
+  border: 1px solid color-mix(in srgb, var(--tier-color, #3b82f6) 35%, white);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.trophy-source {
+  text-transform: capitalize;
 }
 
 .trophy-desc {

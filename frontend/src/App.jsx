@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard';
 import Profile from './components/Profile';
 import EmployerProfile from './components/EmployerProfile';
 import JobList from './components/JobList';
+import JobForm from './components/JobForm';
+import JobDetail from './components/JobDetail';
 import Assessment from './components/Assessment';
 import TrainingHub from './components/TrainingHub';
 import Messages from './components/Messages';
@@ -26,6 +28,9 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/employer-profile" element={<EmployerProfile />} />
             <Route path="/jobs" element={<JobList />} />
+            <Route path="/jobs/new" element={<JobForm />} />
+            <Route path="/jobs/:id" element={<JobDetail />} />
+            <Route path="/jobs/:id/edit" element={<JobForm />} />
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/training" element={<TrainingHub />} />
             <Route path="/messages" element={<Messages />} />

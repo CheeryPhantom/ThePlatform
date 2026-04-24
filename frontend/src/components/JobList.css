@@ -105,6 +105,42 @@
   cursor: pointer;
 }
 
+.match-legend {
+  margin-top: var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--gray-200);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--gray-600);
+}
+
+.match-legend-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+}
+
+.match-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.match-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.match-legend-dot.exact { background: var(--success-500); }
+.match-legend-dot.strong { background: var(--primary-500); }
+.match-legend-dot.partial { background: var(--warning-500); }
+.match-legend-dot.learning { background: var(--gray-400); }
+
 .jobs-section {
   margin-bottom: var(--space-8);
 }
@@ -276,6 +312,65 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid;
+  line-height: 1.2;
+}
+
+.skill-chip.matched {
+  background: #ecfdf5;
+  color: #047857;
+  border-color: #a7f3d0;
+}
+
+.skill-chip.missing {
+  background: #f8fafc;
+  color: #64748b;
+  border-color: #e2e8f0;
+}
+
+.empty-state-card {
+  background: white;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #334155;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.empty-state-card svg {
+  color: #94a3b8;
+}
+
+.empty-state-card h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.empty-state-card p {
+  color: #64748b;
+  max-width: 420px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.empty-state-card .btn {
+  margin-top: 0.5rem;
 }
 
 .job-card-footer {
