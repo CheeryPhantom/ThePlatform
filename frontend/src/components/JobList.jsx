@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import SkillTag from './SkillTag';
-import { Search, MapPin, DollarSign, Clock, Bookmark, ArrowRight, PlusSquare, FileText, Users, Briefcase } from 'lucide-react';
+import { Search, MapPin, DollarSign, Clock, Bookmark, ArrowRight, PlusSquare, Users, Briefcase } from 'lucide-react';
 import DashboardLayout from './DashboardLayout';
 import './JobList.css';
 
@@ -139,24 +139,28 @@ const JobList = () => {
                   <div className="employer-summary-card">
                     <Briefcase size={22} />
                     <div>
-                      <strong>2 listings staged</strong>
-                      <span>Keep this workspace focused on employer-owned roles.</span>
+                      <strong>{employerListings.length} listings</strong>
+                      <span>Drafts and planned roles you own.</span>
                     </div>
                   </div>
                   <div className="employer-summary-card">
                     <Users size={22} />
                     <div>
-                      <strong>0 applicants yet</strong>
-                      <span>Applicant review comes after real posting is wired.</span>
+                      <strong>0 applicants</strong>
+                      <span>Applicants appear once a listing goes live.</span>
                     </div>
                   </div>
-                  <div className="employer-summary-card">
+                  <button
+                    type="button"
+                    className="employer-summary-card employer-summary-cta"
+                    onClick={() => {}}
+                  >
                     <PlusSquare size={22} />
                     <div>
-                      <strong>Posting flow next</strong>
-                      <span>This branch now clearly separates employer management from candidate browsing.</span>
+                      <strong>Post a new role</strong>
+                      <span>Start a draft from a blank spec.</span>
                     </div>
-                  </div>
+                  </button>
                 </div>
               </section>
 
@@ -169,10 +173,10 @@ const JobList = () => {
                           <div className="company-logo">{job.title.slice(0, 2).toUpperCase()}</div>
                           <div className="company-details">
                             <h3>{job.title}</h3>
-                            <p className="job-card-subtitle">{job.status} listing</p>
+                            <p className="job-card-subtitle">Owned by you</p>
                           </div>
                         </div>
-                        <span className="job-status-badge">{job.status}</span>
+                        <span className={`job-status-badge status-${job.status.toLowerCase()}`}>{job.status}</span>
                       </div>
 
                       <div className="job-meta">
@@ -191,16 +195,15 @@ const JobList = () => {
                       </div>
 
                       <p className="job-card-description">
-                        This employer-only card is intentionally different from the candidate jobs feed. It keeps the demo focused on company-owned listings instead of a seeker workflow.
+                        No description added yet. Open the listing to add role requirements, skills, and a summary before publishing.
                       </p>
 
-                      <div className="job-card-footer">
-                        <div className="job-stats">Posting and editing tools are next in the next phase.</div>
+                      <div className="job-card-footer employer-footer">
                         <div className="job-actions">
-                          <button className="btn btn-secondary">Edit Soon</button>
+                          <button className="btn btn-secondary" disabled title="Editing coming soon">Edit</button>
                           <button className="btn btn-primary">
-                            Review Listing
-                            <FileText size={16} style={{ marginLeft: '8px' }} />
+                            Open
+                            <ArrowRight size={16} style={{ marginLeft: '8px' }} />
                           </button>
                         </div>
                       </div>
@@ -306,7 +309,7 @@ const JobList = () => {
 
                         {job.skillsToLearn.length > 0 && (
                           <div className="skills-section">
-                            <div className="skills-section-title">Skills to Learn</div>
+                            <div className="skills-section-title">Grow into these</div>
                             <div className="skills-tags">
                               {job.skillsToLearn.map((skill, index) => (
                                 <SkillTag key={index} skill={skill.name} matchLevel={skill.level} />
@@ -321,7 +324,7 @@ const JobList = () => {
                           Posted {job.posted} · {job.applicants} applicants
                         </div>
                         <div className="job-actions">
-                          <button className="btn btn-secondary">View Details</button>
+                          <button className="btn btn-ghost">View Details</button>
                           <button className="btn btn-primary">
                             Quick Apply
                             <ArrowRight size={16} style={{ marginLeft: '8px' }} />

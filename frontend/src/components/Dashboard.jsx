@@ -30,28 +30,28 @@ const Dashboard = () => {
 
   const stats = isEmployer
     ? [
-        { label: 'Open Roles', value: '0', change: 'Ready to publish', changeType: 'neutral', icon: Briefcase, className: 'stat-applied' },
-        { label: 'Company Profile', value: '70%', change: 'Complete key details', changeType: 'positive', icon: Building2, className: 'stat-views' },
-        { label: 'Candidate Views', value: '0', change: 'No live jobs yet', changeType: 'neutral', icon: Eye, className: 'stat-score' },
+        { label: 'Open Roles', value: '0', change: 'Post your first role', changeType: 'neutral', icon: Briefcase, className: 'stat-applied' },
+        { label: 'Company Profile', value: '70%', change: 'Add logo and team info', changeType: 'positive', icon: Building2, className: 'stat-views' },
+        { label: 'Candidate Views', value: '—', change: 'Shows once jobs are live', changeType: 'neutral', icon: Eye, className: 'stat-score' },
         { label: 'Applicants', value: '0', change: 'Will appear here', changeType: 'neutral', icon: Users, className: 'stat-assessment' }
       ]
     : [
-        { label: 'Applied Jobs', value: '12', change: '+8% this week', changeType: 'positive', icon: TrendingUp, className: 'stat-applied' },
-        { label: 'Profile Views', value: '47', change: '+12 today', changeType: 'positive', icon: TrendingUp, className: 'stat-views' },
-        { label: 'Skill Score', value: '85/100', change: 'Strong Match', changeType: 'neutral', icon: Target, className: 'stat-score' },
-        { label: 'Profile Status', value: '3 of 5', change: 'Complete', changeType: 'neutral', icon: CheckCircle, className: 'stat-assessment' }
+        { label: 'Applied Jobs', value: '0', change: 'Start browsing roles', changeType: 'neutral', icon: TrendingUp, className: 'stat-applied' },
+        { label: 'Profile Views', value: '—', change: 'Shows once you apply', changeType: 'neutral', icon: TrendingUp, className: 'stat-views' },
+        { label: 'Skill Score', value: '—', change: 'Take an assessment to score', changeType: 'neutral', icon: Target, className: 'stat-score' },
+        { label: 'Profile Status', value: '3 of 5', change: '2 sections left', changeType: 'neutral', icon: CheckCircle, className: 'stat-assessment' }
       ];
 
   const quickActions = isEmployer
     ? [
-        { title: 'Complete Company Profile', description: 'Add the details candidates need before they trust your roles.', action: 'Edit Company', icon: Building2, primary: true, path: '/employer-profile' },
-        { title: 'Review Job Listings', description: 'See employer-owned listings instead of the candidate job feed.', action: 'View Listings', icon: Briefcase, primary: false, path: '/jobs' },
-        { title: 'Prepare A New Role', description: 'Posting flow is next, but the employer workspace should already feel distinct.', action: 'Open Listings', icon: PlusSquare, primary: false, path: '/jobs' }
+        { title: 'Complete Company Profile', description: 'Add the details candidates look for: logo, team size, and what you actually build.', action: 'Edit Company', icon: Building2, primary: true, path: '/employer-profile' },
+        { title: 'Manage Job Listings', description: 'Your posted and drafted roles in one place — separate from the candidate feed.', action: 'View Listings', icon: Briefcase, primary: false, path: '/jobs' },
+        { title: 'Plan a New Role', description: 'Draft a role spec and skill requirements before posting it live.', action: 'Open Listings', icon: PlusSquare, primary: false, path: '/jobs' }
       ]
     : [
-        { title: 'Complete Your Profile', description: 'Keep your profile current so employers can evaluate you quickly.', action: 'Edit Profile', icon: User, primary: true, path: '/profile' },
-        { title: 'Browse Jobs', description: 'Explore relevant opportunities and prepare for live applications.', action: 'View Jobs', icon: Briefcase, primary: false, path: '/jobs' },
-        { title: 'Strengthen Your Positioning', description: 'Assessment and training can follow once the hiring loop is wired.', action: 'Stay Focused', icon: Target, primary: false, path: '/dashboard' }
+        { title: 'Complete Your Profile', description: 'A filled-out profile matches to ~3× more roles. Start with skills and experience.', action: 'Edit Profile', icon: User, primary: true, path: '/profile' },
+        { title: 'Browse Jobs', description: 'See open roles in IT and Finance with a clear match rating against your profile.', action: 'View Jobs', icon: Briefcase, primary: false, path: '/jobs' },
+        { title: 'Take an Assessment', description: 'Prove your skills with a short domain-specific test — your score unlocks stronger matches.', action: 'Start Assessment', icon: Target, primary: false, path: '/assessment' }
       ];
 
   if (!user) return <div className="text-center py-8">Loading...</div>;
@@ -116,19 +116,19 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Recommended Jobs Empty State */}
+      {/* Recommended / Workspace Empty State */}
       <section className="recommended-jobs-section">
         <div className="empty-state-icon">
           <Briefcase size={120} />
         </div>
-        <h2 className="empty-state-title">{isEmployer ? 'Your Hiring Workspace Starts Here' : 'Recommended Jobs Will Show Here'}</h2>
+        <h2 className="empty-state-title">{isEmployer ? 'Your hiring workspace' : 'Recommended jobs'}</h2>
         <p className="empty-state-description">
           {isEmployer
-            ? 'Use the employer profile and listings workspace to present a clean recruiting story. Posting and applicant management are the next phase.'
-            : 'Once jobs are connected to live backend data, this area can surface stronger candidate recommendations.'}
+            ? 'Once you publish a role, applicants and candidate views will show up here. Until then, keep your company profile current so candidates know who they\'re applying to.'
+            : 'Fill out your skills and experience, and we\'ll start surfacing the roles that actually match you — not every job with a matching keyword.'}
         </p>
-        <button className="btn btn-primary empty-state-btn" onClick={() => navigate(isEmployer ? '/employer-profile' : '/jobs')}>
-          {isEmployer ? 'Open Company Profile' : 'Open Jobs'}
+        <button className="btn btn-primary empty-state-btn" onClick={() => navigate(isEmployer ? '/employer-profile' : '/profile')}>
+          {isEmployer ? 'Open Company Profile' : 'Complete Profile'}
         </button>
       </section>
     </DashboardLayout>

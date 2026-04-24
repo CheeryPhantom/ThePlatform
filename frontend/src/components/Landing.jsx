@@ -6,17 +6,43 @@ const Landing = () => {
     {
       icon: '🎯',
       title: 'Assess',
-      description: 'Take a skill assessment tailored to your domain'
+      description: 'A short, domain-specific skill test. No multi-hour puzzles, no trick questions — just the tech and concepts actual employers hire for.',
+      step: 'Step 1'
     },
     {
       icon: '⚡',
       title: 'Match',
-      description: 'Get personalized job recommendations'
+      description: 'Your profile and score map to live roles with a clear strength rating, so you stop guessing whether a posting is worth your time.',
+      step: 'Step 2'
     },
     {
       icon: '🤝',
       title: 'Connect',
-      description: 'Apply to roles where you\'re a proven fit'
+      description: 'One-tap apply with your pre-scored profile — employers see proof of skill, not just another resume lost in a pile.',
+      step: 'Step 3'
+    }
+  ];
+
+  const audiences = [
+    {
+      title: 'For candidates',
+      bullets: [
+        'Get matched to roles that actually fit your skill level',
+        'Skip the black-hole resume drop',
+        'See what you need to learn to unlock higher matches'
+      ],
+      cta: 'Create your profile',
+      to: '/register'
+    },
+    {
+      title: 'For employers',
+      bullets: [
+        'Pre-screened candidates by skill, not keywords',
+        'Role-aware workspace separate from candidate browsing',
+        'Post once, reach Nepal\'s IT and Finance talent'
+      ],
+      cta: 'Hire on The Platform',
+      to: '/register?role=employer'
     }
   ];
 
@@ -70,15 +96,15 @@ const Landing = () => {
                 {/* Placeholder for illustration */}
                 <div className="illustration-placeholder">
                   <div className="stat-card">
-                    <div className="stat-number">85%</div>
+                    <div className="stat-number">85<span className="stat-unit">%</span></div>
                     <div className="stat-label">Match Rate</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-number">24hrs</div>
+                    <div className="stat-number">24<span className="stat-unit">hr</span></div>
                     <div className="stat-label">Avg Response</div>
                   </div>
                   <div className="stat-card">
-                    <div className="stat-number">10k+</div>
+                    <div className="stat-number">10<span className="stat-unit">k+</span></div>
                     <div className="stat-label">Jobs Posted</div>
                   </div>
                 </div>
@@ -92,12 +118,35 @@ const Landing = () => {
       <section className="how-it-works">
         <div className="container">
           <h2 className="section-title">How It Works</h2>
+          <p className="section-subtitle">Three steps — built around the reality of job hunting in IT and Finance.</p>
           <div className="features-grid">
             {features.map((feature, index) => (
               <div key={index} className="feature-card card">
+                <div className="feature-step">{feature.step}</div>
                 <div className="feature-icon">{feature.icon}</div>
                 <h3 className="feature-title">{feature.title}</h3>
                 <p className="feature-description">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Audience split */}
+      <section className="audience-section">
+        <div className="container">
+          <div className="audience-grid">
+            {audiences.map((a) => (
+              <div key={a.title} className="audience-card">
+                <h3 className="audience-title">{a.title}</h3>
+                <ul className="audience-bullets">
+                  {a.bullets.map((b) => (
+                    <li key={b}>{b}</li>
+                  ))}
+                </ul>
+                <Link to={a.to} className="audience-cta">
+                  {a.cta} →
+                </Link>
               </div>
             ))}
           </div>

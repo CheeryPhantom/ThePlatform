@@ -90,7 +90,7 @@ const PreferencesSection = ({
 
         <div className="form-row">
           <div className="form-group">
-            <label className="form-label">Expected salary (per {salary.period})</label>
+            <label className="form-label">Expected salary</label>
             <div className="salary-inputs">
               <select
                 className="form-input"
@@ -104,7 +104,7 @@ const PreferencesSection = ({
               <input
                 type="number"
                 className="form-input"
-                placeholder="Min"
+                placeholder="Min (e.g. 50000)"
                 value={salary.min ?? ''}
                 min="0"
                 onChange={(e) =>
@@ -119,7 +119,7 @@ const PreferencesSection = ({
               <input
                 type="number"
                 className="form-input"
-                placeholder="Max"
+                placeholder="Max (e.g. 80000)"
                 value={salary.max ?? ''}
                 min="0"
                 onChange={(e) =>
@@ -237,7 +237,8 @@ const PreferencesSection = ({
               onChange={(e) => set({ open_to_work: e.target.checked })}
             />
             <label htmlFor="pref-otw" className="checkbox-label">
-              Open to work (show a visible badge on your profile)
+              Open to work
+              <small>Shows a visible badge on your profile</small>
             </label>
           </div>
         </div>

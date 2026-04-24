@@ -279,24 +279,31 @@
 }
 
 .job-card-footer {
-  padding: var(--space-6);
-  padding-top: var(--space-4);
+  padding: var(--space-5) var(--space-6);
   border-top: 1px solid var(--gray-200);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.job-card-footer.employer-footer {
+  flex-direction: row;
+  justify-content: flex-end;
   align-items: center;
-  gap: var(--space-4);
 }
 
 .job-stats {
   font-size: var(--text-sm);
   color: var(--gray-500);
   overflow-wrap: anywhere;
+  line-height: 1.4;
 }
 
 .job-actions {
   display: flex;
   gap: var(--space-3);
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
 .job-actions .btn {
@@ -308,13 +315,42 @@
 .job-status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 0.75rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 999px;
-  background: #dbeafe;
-  color: #1d4ed8;
-  font-size: 0.85rem;
+  background: #f3f4f6;
+  color: #374151;
+  font-size: 0.75rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   white-space: nowrap;
+  border: 1px solid #e5e7eb;
+}
+
+.job-status-badge.status-draft {
+  background: #f3f4f6;
+  color: #4b5563;
+  border-color: #d1d5db;
+}
+
+.job-status-badge.status-planned {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.job-status-badge.status-live,
+.job-status-badge.status-active {
+  background: #d1fae5;
+  color: #065f46;
+  border-color: #a7f3d0;
+}
+
+.job-status-badge.status-closed,
+.job-status-badge.status-archived {
+  background: #fee2e2;
+  color: #991b1b;
+  border-color: #fecaca;
 }
 
 .job-card-subtitle,
@@ -349,6 +385,23 @@
   border-radius: 18px;
   background: var(--gray-50);
   min-width: 0;
+  border: 1px solid transparent;
+  text-align: left;
+  font-family: inherit;
+}
+
+button.employer-summary-card,
+.employer-summary-cta {
+  cursor: pointer;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  border-color: #bfdbfe;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+button.employer-summary-card:hover,
+.employer-summary-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.15);
 }
 
 .employer-summary-card svg {
