@@ -206,22 +206,23 @@
 
 .illustration-placeholder {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-4);
-  max-width: 400px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
 }
 
-/* STATS CARDS - CRITICAL FIX */
+/* STATS CARDS */
 .illustration-placeholder .stat-card {
   background-color: #FFFFFF;
-  /* SOLID WHITE, not transparent */
-  padding: 32px 24px;
+  padding: 24px 12px;
   border-radius: 12px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   text-align: center;
   transition: all 0.3s ease;
   border: none;
   backdrop-filter: none;
+  min-width: 0;
 }
 
 .illustration-placeholder .stat-card:hover {
@@ -230,22 +231,32 @@
 }
 
 .stat-number {
-  font-size: 48px;
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 800;
   color: #3B82F6;
   line-height: 1;
   margin-bottom: 8px;
   display: block;
+  letter-spacing: -0.02em;
+}
+
+.stat-unit {
+  font-size: 0.55em;
+  font-weight: 700;
+  color: #60A5FA;
+  margin-left: 2px;
+  letter-spacing: 0;
 }
 
 .stat-label {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #1F2937;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
   display: block;
+  overflow-wrap: anywhere;
 }
 
 .stat-description {
@@ -264,8 +275,17 @@
   font-size: var(--text-4xl);
   font-weight: 700;
   text-align: center;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-3);
   color: var(--gray-900);
+}
+
+.section-subtitle {
+  font-size: var(--text-lg);
+  color: var(--gray-600);
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto var(--space-12);
+  line-height: 1.5;
 }
 
 .features-grid {
@@ -275,18 +295,32 @@
 }
 
 .feature-card {
-  text-align: center;
+  text-align: left;
   padding: var(--space-8);
+  position: relative;
+}
+
+.feature-step {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #2563eb;
+  background: #eff6ff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
 }
 
 .feature-icon {
-  font-size: var(--text-5xl);
-  margin-bottom: var(--space-4);
+  font-size: var(--text-4xl);
+  margin-bottom: var(--space-3);
 }
 
 .feature-title {
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: var(--space-3);
   color: var(--gray-900);
 }
@@ -294,6 +328,102 @@
 .feature-description {
   color: var(--gray-600);
   line-height: 1.6;
+}
+
+/* ========================================
+   AUDIENCE SPLIT (For candidates / For employers)
+   ======================================== */
+
+.audience-section {
+  padding: var(--space-12) 0 var(--space-20);
+  background-color: var(--surface-secondary);
+}
+
+.audience-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-6);
+}
+
+.audience-card {
+  background: white;
+  border-radius: 16px;
+  padding: var(--space-8);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.audience-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: #1E40AF;
+  margin: 0;
+}
+
+.audience-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.audience-bullets li {
+  position: relative;
+  padding-left: 1.75rem;
+  color: var(--gray-700);
+  line-height: 1.55;
+}
+
+.audience-bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.3);
+}
+
+.audience-bullets li::after {
+  content: '✓';
+  position: absolute;
+  left: 4px;
+  top: 0.25rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.audience-cta {
+  align-self: flex-start;
+  color: #1E40AF;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  margin-top: auto;
+  padding-top: var(--space-2);
+  transition: gap 0.15s ease;
+}
+
+.audience-cta:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .audience-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-section {
+    padding: var(--space-8) 0 var(--space-12);
+  }
 }
 
 /* Domains */
@@ -474,8 +604,13 @@
   }
 
   .illustration-placeholder {
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    max-width: 100%;
+  }
+
+  .illustration-placeholder .stat-card {
+    padding: 16px 8px;
   }
 
   .footer-content {
