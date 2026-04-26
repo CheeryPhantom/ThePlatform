@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -11,7 +11,9 @@ import {
     X,
     Search,
     Building2,
-    PlusSquare
+    PlusSquare,
+    LogOut,
+    ChevronDown
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -20,10 +22,35 @@ const DashboardLayout = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
 
     const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
     const closeSidebar = () => setIsSidebarOpen(false);
     const profilePath = user?.role === 'employer' ? '/employer-profile' : '/profile';
+
+    const doLogout = () => {
+        setUserMenuOpen(false);
+        logout();
+        navigate('/login', { replace: true });
+    };
+
+    useEffect(() => {
+        const onClickOutside = (e) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
+                setUserMenuOpen(false);
+            }
+        };
+        const onEscape = (e) => {
+            if (e.key === 'Escape') setUserMenuOpen(false);
+        };
+        document.addEventListener('mousedown', onClickOutside);
+        document.addEventListener('keydown', onEscape);
+        return () => {
+            document.removeEventListener('mousedown', onClickOutside);
+            document.removeEventListener('keydown', onEscape);
+        };
+    }, []);
 
     const sidebarItems = user?.role === 'employer'
         ? [
@@ -73,20 +100,15 @@ const DashboardLayout = ({ children }) => {
                             {item.label}
                         </a>
                     ))}
-                    {/* Logout at bottom of sidebar mobile/desktop */}
-                    <a
-                        href="#"
-                        className="sidebar-nav-item"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            logout();
-                            navigate('/login');
-                        }}
-                        style={{ marginTop: 'auto', borderTop: '1px solid var(--gray-200)' }}
+                    {/* Logout at bottom of sidebar */}
+                    <button
+                        type="button"
+                        className="sidebar-nav-item sidebar-logout"
+                        onClick={doLogout}
                     >
-                        <span className="sidebar-nav-icon">🚪</span>
-                        Logout
-                    </a>
+                        <LogOut className="sidebar-nav-icon" size={18} />
+                        Log out
+                    </button>
                 </nav>
             </aside>
 
@@ -110,12 +132,57 @@ const DashboardLayout = ({ children }) => {
                         )}
                     </div>
                     <div className="header-actions">
-                        <button className="header-notification-btn">
+                        <button className="header-notification-btn" aria-label="Notifications">
                             <Bell size={20} />
                         </button>
-                        <button className="header-avatar-btn" onClick={() => navigate(profilePath)} title="Open profile">
-                            {user?.name ? user.name[0].toUpperCase() : <User size={20} />}
-                        </button>
+                        <div className="user-menu" ref={userMenuRef}>
+                            <button
+                                className="header-avatar-btn"
+                                onClick={() => setUserMenuOpen((o) => !o)}
+                                aria-haspopup="menu"
+                                aria-expanded={userMenuOpen}
+                                aria-label="Account menu"
+                            >
+                                <span className="header-avatar-initials">
+                                    {user?.name ? user.name[0].toUpperCase() : <User size={16} />}
+                                </span>
+                                <ChevronDown size={14} className="header-avatar-caret" />
+                            </button>
+                            {userMenuOpen && (
+                                <div className="user-menu-dropdown" role="menu">
+                                    <div className="user-menu-header">
+                                        <div className="user-menu-name">{user?.name || 'User'}</div>
+                                        <div className="user-menu-email">{user?.email}</div>
+                                        <div className="user-menu-role">{user?.role}</div>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        className="user-menu-item"
+                                        role="menuitem"
+                                        onClick={() => { setUserMenuOpen(false); navigate(profilePath); }}
+                                    >
+                                        <User size={16} /> {user?.role === 'employer' ? 'Company profile' : 'My profile'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="user-menu-item"
+                                        role="menuitem"
+                                        onClick={() => { setUserMenuOpen(false); navigate('/settings'); }}
+                                    >
+                                        <Settings size={16} /> Settings
+                                    </button>
+                                    <div className="user-menu-divider" />
+                                    <button
+                                        type="button"
+                                        className="user-menu-item user-menu-danger"
+                                        role="menuitem"
+                                        onClick={doLogout}
+                                    >
+                                        <LogOut size={16} /> Log out
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </header>
 
