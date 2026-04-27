@@ -11,7 +11,13 @@ import {
   update,
   setStatus,
   remove,
-  listApplicants
+  listApplicants,
+  duplicateJob,
+  withdrawApplication,
+  updateApplicant,
+  saveJob,
+  unsaveJob,
+  mySavedJobs
 } from '../controllers/jobsController.js';
 
 const router = express.Router();
@@ -31,28 +37,34 @@ const optionalAuth = async (req, _res, next) => {
   next();
 };
 
-// Public feed with optional auth for match scoring.
+// Public feed with optional auth for match scoring + saved flag.
 router.get('/', optionalAuth, listPublished);
 
-// Candidate: my applications
+// Candidate: applications + saved jobs
 router.get('/applications/mine', authenticate, myApplications);
+router.post('/applications/:id/withdraw', authenticate, withdrawApplication);
+router.get('/saved', authenticate, mySavedJobs);
 
 // Employer: list my jobs
 router.get('/mine', authenticate, listMine);
 
-// Employer: create + update + status transitions + delete
+// Employer: create + update + status transitions + delete + duplicate
 router.post('/', authenticate, create);
 router.put('/:id', authenticate, update);
 router.post('/:id/publish', authenticate, setStatus('published'));
 router.post('/:id/close', authenticate, setStatus('closed'));
 router.post('/:id/unpublish', authenticate, setStatus('draft'));
+router.post('/:id/duplicate', authenticate, duplicateJob);
 router.delete('/:id', authenticate, remove);
 
-// Employer: applicants for a specific job
+// Employer: applicants for a specific job + per-applicant updates
 router.get('/:id/applicants', authenticate, listApplicants);
+router.put('/applicants/:applicationId', authenticate, updateApplicant);
 
-// Candidate apply
+// Candidate apply + bookmark
 router.post('/:id/apply', authenticate, apply);
+router.post('/:id/save', authenticate, saveJob);
+router.delete('/:id/save', authenticate, unsaveJob);
 
 // Public single job (put after /mine etc. to avoid conflicts)
 router.get('/:id', optionalAuth, getJob);

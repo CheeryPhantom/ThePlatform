@@ -1,0 +1,151 @@
+.my-applications-page {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.my-applications-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.25rem;
+}
+
+.my-applications-header p {
+  color: #475569;
+  margin: 0 0 1.5rem;
+}
+
+.application-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.application-row {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  transition: box-shadow 0.15s ease;
+}
+
+.application-row:hover {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.application-main {
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.application-company-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.application-company-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.application-meta {
+  min-width: 0;
+}
+
+.application-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #0f172a;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.application-title:hover {
+  text-decoration: underline;
+}
+
+.application-company {
+  color: #475569;
+  font-size: 0.875rem;
+}
+
+.application-applied {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.2rem;
+}
+
+.application-side {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.application-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+
+.application-status.status-submitted { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+.application-status.status-reviewing { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+.application-status.status-shortlisted { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+.application-status.status-interview { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+.application-status.status-rejected { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+.application-status.status-hired { background: #dcfce7; color: #166534; border-color: #86efac; }
+.application-status.status-withdrawn { background: #f3f4f6; color: #6b7280; border-color: #e5e7eb; }
+
+.application-withdraw {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.75rem;
+  background: white;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.application-withdraw:hover:not(:disabled) {
+  background: #fef2f2;
+}
+
+.application-withdraw:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

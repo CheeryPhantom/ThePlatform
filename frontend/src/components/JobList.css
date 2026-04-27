@@ -220,6 +220,48 @@
   color: var(--gray-600);
 }
 
+.bookmark-btn.saved {
+  color: var(--primary-600);
+}
+
+.bookmark-btn.saved:hover {
+  background: var(--primary-50);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: white;
+  color: var(--gray-700);
+  border: 1.5px solid var(--gray-200);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filter-chip:hover {
+  border-color: var(--primary-300);
+  color: var(--primary-700);
+  background: var(--primary-50);
+}
+
+.filter-chip.active {
+  background: var(--primary-600);
+  color: white;
+  border-color: var(--primary-600);
+}
+
 .job-title {
   font-size: var(--text-2xl);
   font-weight: var(--font-bold);

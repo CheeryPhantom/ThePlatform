@@ -1,7 +1,20 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import './Landing.css';
 
 const Landing = () => {
+  const navigate = useNavigate();
+  const [heroQuery, setHeroQuery] = useState('');
+  const [heroLocation, setHeroLocation] = useState('');
+
+  const submitSearch = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (heroQuery.trim()) params.set('q', heroQuery.trim());
+    if (heroLocation.trim()) params.set('location', heroLocation.trim());
+    navigate(`/jobs${params.toString() ? '?' + params.toString() : ''}`);
+  };
+
   const features = [
     {
       icon: '🎯',
@@ -87,6 +100,23 @@ const Landing = () => {
                   For Employers
                 </Link>
               </div>
+              <form className="hero-search" onSubmit={submitSearch} role="search">
+                <input
+                  type="text"
+                  placeholder="Search by title or skill (e.g. React, Finance Analyst)"
+                  value={heroQuery}
+                  onChange={(e) => setHeroQuery(e.target.value)}
+                  aria-label="Search jobs"
+                />
+                <input
+                  type="text"
+                  placeholder="Location (e.g. Kathmandu, Remote)"
+                  value={heroLocation}
+                  onChange={(e) => setHeroLocation(e.target.value)}
+                  aria-label="Location"
+                />
+                <button type="submit" className="hero-search-btn">Search</button>
+              </form>
               <div className="hero-trust">
                 <p>No spam. No endless applications. Just matches.</p>
               </div>

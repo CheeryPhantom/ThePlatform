@@ -34,8 +34,14 @@ const emptyJob = {
   currency: 'NPR',
   salary_min: '',
   salary_max: '',
-  application_url: ''
+  application_url: '',
+  screening_questions: []
 };
+
+const newQuestionId = () =>
+  (typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `q-${Math.random().toString(36).slice(2, 10)}`);
 
 const JobForm = () => {
   const { user, loading: authLoading } = useAuth();
@@ -116,8 +122,36 @@ const JobForm = () => {
       salary_min: numOrNull(job.salary_min),
       salary_max: numOrNull(job.salary_max),
       application_url: job.application_url || null,
-      status: overrideStatus || job.status || 'draft'
+      status: overrideStatus || job.status || 'draft',
+      screening_questions: (job.screening_questions || []).map((q) => ({
+        id: q.id,
+        label: (q.label || '').trim(),
+        type: q.type || 'text',
+        required: !!q.required,
+        options: q.type === 'select' ? (q.options || []).filter(Boolean) : []
+      })).filter((q) => q.label)
     };
+  };
+
+  const addQuestion = () => {
+    set({
+      screening_questions: [
+        ...(job.screening_questions || []),
+        { id: newQuestionId(), label: '', type: 'text', required: false, options: [] }
+      ]
+    });
+  };
+
+  const updateQuestion = (idx, patch) => {
+    const next = [...(job.screening_questions || [])];
+    next[idx] = { ...next[idx], ...patch };
+    set({ screening_questions: next });
+  };
+
+  const removeQuestion = (idx) => {
+    const next = [...(job.screening_questions || [])];
+    next.splice(idx, 1);
+    set({ screening_questions: next });
   };
 
   const save = async (nextStatus) => {
@@ -433,6 +467,99 @@ const JobForm = () => {
                     If set, candidates will be sent here instead of applying on the platform.
                   </div>
                 </div>
+              </div>
+            </section>
+
+            <section className="profile-section">
+              <h2 className="profile-section-title">Screening questions</h2>
+              <div className="profile-form">
+                <div className="field-hint" style={{ marginBottom: '0.75rem' }}>
+                  Optional questions candidates answer at apply time. Required ones block apply if blank.
+                </div>
+
+                {(job.screening_questions || []).length === 0 ? (
+                  <p className="muted" style={{ margin: '0 0 0.75rem' }}>No questions yet.</p>
+                ) : (
+                  <div className="screening-questions">
+                    {(job.screening_questions || []).map((q, idx) => (
+                      <div key={q.id} className="screening-question">
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label className="form-label">Question</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              maxLength={280}
+                              value={q.label}
+                              placeholder="e.g. Are you legally authorised to work in Nepal?"
+                              onChange={(e) => updateQuestion(idx, { label: e.target.value })}
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label className="form-label">Type</label>
+                            <select
+                              className="form-input"
+                              value={q.type}
+                              onChange={(e) => updateQuestion(idx, { type: e.target.value })}
+                            >
+                              <option value="text">Free text</option>
+                              <option value="yes_no">Yes / No</option>
+                              <option value="select">Multiple choice</option>
+                            </select>
+                          </div>
+                        </div>
+                        {q.type === 'select' && (
+                          <div className="form-group">
+                            <label className="form-label">Options (comma-separated)</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              maxLength={400}
+                              value={(q.options || []).join(', ')}
+                              placeholder="Option A, Option B, Option C"
+                              onChange={(e) =>
+                                updateQuestion(idx, {
+                                  options: e.target.value
+                                    .split(',')
+                                    .map((s) => s.trim())
+                                    .filter(Boolean)
+                                    .slice(0, 10)
+                                })
+                              }
+                            />
+                          </div>
+                        )}
+                        <div className="screening-row-controls">
+                          <label className="checkbox-label" style={{ flexDirection: 'row', alignItems: 'center', gap: '0.4rem' }}>
+                            <input
+                              type="checkbox"
+                              className="checkbox-input"
+                              checked={!!q.required}
+                              onChange={(e) => updateQuestion(idx, { required: e.target.checked })}
+                            />
+                            Required
+                          </label>
+                          <button
+                            type="button"
+                            className="cancel-btn"
+                            onClick={() => removeQuestion(idx)}
+                          >
+                            <Trash2 size={12} style={{ marginRight: 4 }} /> Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={addQuestion}
+                  disabled={(job.screening_questions || []).length >= 15}
+                >
+                  + Add question
+                </button>
               </div>
             </section>
 

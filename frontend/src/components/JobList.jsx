@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Search,
   MapPin,
   DollarSign,
   Clock,
   Bookmark,
+  BookmarkCheck,
   ArrowRight,
   PlusSquare,
   Users,
   Briefcase,
-  CheckCircle
+  CheckCircle,
+  Copy
 } from 'lucide-react';
 import { apiFetch } from '../api/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -51,23 +53,80 @@ const statusClass = (status) => `status-${(status || 'draft').toLowerCase()}`;
 const JobList = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const isEmployer = user?.role === 'employer';
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('');
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+  const [location, setLocation] = useState(searchParams.get('location') || '');
   const [sortBy, setSortBy] = useState('best-match');
+  const [showSavedOnly, setShowSavedOnly] = useState(searchParams.get('saved') === '1');
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+  // Debounce server-side search by 350ms
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchTerm), 350);
+    return () => clearTimeout(t);
+  }, [searchTerm]);
 
   useEffect(() => {
     setLoading(true);
-    const path = isEmployer ? 'jobs/mine' : 'jobs';
+    let path;
+    if (isEmployer) {
+      path = 'jobs/mine';
+    } else if (showSavedOnly) {
+      path = 'jobs/saved';
+    } else {
+      const params = new URLSearchParams();
+      if (debouncedSearch) params.set('q', debouncedSearch);
+      if (location) params.set('location', location);
+      const qs = params.toString();
+      path = qs ? `jobs?${qs}` : 'jobs';
+    }
     apiFetch(path)
       .then((d) => setJobs(d.jobs || []))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [isEmployer]);
+  }, [isEmployer, debouncedSearch, location, showSavedOnly]);
+
+  // Keep URL in sync so search results are bookmarkable / shareable.
+  useEffect(() => {
+    if (isEmployer) return;
+    const next = new URLSearchParams();
+    if (debouncedSearch) next.set('q', debouncedSearch);
+    if (location) next.set('location', location);
+    if (showSavedOnly) next.set('saved', '1');
+    setSearchParams(next, { replace: true });
+  }, [isEmployer, debouncedSearch, location, showSavedOnly, setSearchParams]);
+
+  const toggleSave = async (jobId, currentlySaved) => {
+    // Optimistic update
+    setJobs((list) =>
+      list.map((j) => (j.id === jobId ? { ...j, saved: !currentlySaved } : j))
+    );
+    try {
+      await apiFetch(`jobs/${jobId}/save`, {
+        method: currentlySaved ? 'DELETE' : 'POST'
+      });
+    } catch (err) {
+      // Revert
+      setJobs((list) =>
+        list.map((j) => (j.id === jobId ? { ...j, saved: currentlySaved } : j))
+      );
+      alert(err.message || 'Could not update bookmark');
+    }
+  };
+
+  const cloneListing = async (jobId) => {
+    try {
+      const res = await apiFetch(`jobs/${jobId}/duplicate`, { method: 'POST' });
+      navigate(`/jobs/${res.job.id}/edit`);
+    } catch (err) {
+      alert(err.message || 'Clone failed');
+    }
+  };
 
   const filtered = useMemo(() => {
     let list = jobs;
@@ -224,6 +283,14 @@ const JobList = () => {
 
                         <div className="job-card-footer employer-footer">
                           <div className="job-actions">
+                            <button
+                              type="button"
+                              className="btn btn-ghost"
+                              onClick={(e) => { e.stopPropagation(); cloneListing(job.id); }}
+                              title="Duplicate as new draft"
+                            >
+                              <Copy size={14} style={{ marginRight: 4 }} /> Clone
+                            </button>
                             <Link
                               to={`/jobs/${job.id}/edit`}
                               className="btn btn-secondary"
@@ -279,6 +346,22 @@ const JobList = () => {
                       <option value="highest-salary">Highest Salary</option>
                     </select>
                   </div>
+                  <div className="filter-row">
+                    <button
+                      type="button"
+                      className={`filter-chip ${!showSavedOnly ? 'active' : ''}`}
+                      onClick={() => setShowSavedOnly(false)}
+                    >
+                      All jobs
+                    </button>
+                    <button
+                      type="button"
+                      className={`filter-chip ${showSavedOnly ? 'active' : ''}`}
+                      onClick={() => setShowSavedOnly(true)}
+                    >
+                      <BookmarkCheck size={14} /> Saved
+                    </button>
+                  </div>
                   <div className="match-legend" aria-label="Match strength legend">
                     <span className="match-legend-label">Match strength</span>
                     <span className="match-legend-item"><span className="match-legend-dot exact" /> 90+ Strong fit</span>
@@ -319,11 +402,15 @@ const JobList = () => {
                               </div>
                             </div>
                             <button
-                              className="bookmark-btn"
-                              aria-label="Bookmark job"
-                              onClick={(e) => e.stopPropagation()}
+                              className={`bookmark-btn ${job.saved ? 'saved' : ''}`}
+                              aria-label={job.saved ? 'Remove bookmark' : 'Bookmark job'}
+                              aria-pressed={!!job.saved}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleSave(job.id, !!job.saved);
+                              }}
                             >
-                              <Bookmark size={20} />
+                              {job.saved ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
                             </button>
                           </div>
 
