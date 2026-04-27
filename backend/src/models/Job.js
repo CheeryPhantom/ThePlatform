@@ -5,6 +5,7 @@ const JOB_SELECT = `
   j.requirements, j.location, j.is_remote, j.employment_type, j.experience_level,
   j.currency, j.salary_min, j.salary_max, j.application_url,
   j.status, j.active, j.posted_at, j.expires_at, j.closed_at, j.metadata,
+  j.screening_questions,
   j.created_at, j.updated_at,
   e.company_name, e.logo_url AS company_logo_url, e.location AS company_location
 `;
@@ -15,8 +16,8 @@ class Job {
       `INSERT INTO jobs
          (employer_id, created_by_user_id, title, description, requirements, location,
           is_remote, employment_type, experience_level, currency,
-          salary_min, salary_max, application_url, status, metadata)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
+          salary_min, salary_max, application_url, status, metadata, screening_questions)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
        RETURNING *`,
       [
         employerId,
@@ -33,10 +34,33 @@ class Job {
         data.salary_max ?? null,
         data.application_url || null,
         data.status || 'draft',
-        data.metadata ? JSON.stringify(data.metadata) : null
+        data.metadata ? JSON.stringify(data.metadata) : null,
+        JSON.stringify(data.screening_questions || [])
       ]
     );
     return result.rows[0];
+  }
+
+  static async duplicate(jobId, employerId, createdByUserId) {
+    const original = await this.findById(jobId);
+    if (!original || original.employer_id !== employerId) return null;
+    const cloned = await this.create(employerId, createdByUserId, {
+      title: `${original.title} (copy)`,
+      description: original.description,
+      requirements: original.requirements,
+      location: original.location,
+      is_remote: original.is_remote,
+      employment_type: original.employment_type,
+      experience_level: original.experience_level,
+      currency: original.currency,
+      salary_min: original.salary_min,
+      salary_max: original.salary_max,
+      application_url: original.application_url,
+      status: 'draft',
+      metadata: original.metadata,
+      screening_questions: original.screening_questions || []
+    });
+    return cloned;
   }
 
   static async update(jobId, employerId, data) {
@@ -62,6 +86,8 @@ class Job {
     if (data.status !== undefined) push('status', data.status);
     if (data.metadata !== undefined)
       push('metadata', data.metadata ? JSON.stringify(data.metadata) : null);
+    if (data.screening_questions !== undefined)
+      push('screening_questions', JSON.stringify(data.screening_questions || []));
 
     if (!fields.length) return this.findById(jobId);
 
@@ -116,26 +142,36 @@ class Job {
   static async listPublished({ search, location, limit = 50, offset = 0 } = {}) {
     const where = [`j.status = 'published'`, `j.active = TRUE`];
     const values = [];
+    let rankSelect = '';
+    let orderBy = `j.posted_at DESC NULLS LAST, j.created_at DESC`;
     if (search) {
-      values.push(`%${search.toLowerCase()}%`);
+      values.push(search);
+      // Full-text search using the existing GIN index, with ILIKE fallback so
+      // partial words still match.
       where.push(
-        `(LOWER(j.title) LIKE $${values.length} OR LOWER(j.description) LIKE $${values.length})`
+        `(to_tsvector('english', coalesce(j.title,'') || ' ' || coalesce(j.description,'')) @@ plainto_tsquery('english', $${values.length})
+          OR j.title ILIKE '%' || $${values.length} || '%')`
       );
+      rankSelect = `, ts_rank(to_tsvector('english', coalesce(j.title,'') || ' ' || coalesce(j.description,'')), plainto_tsquery('english', $${values.length})) AS rank`;
+      orderBy = `rank DESC NULLS LAST, j.posted_at DESC NULLS LAST, j.created_at DESC`;
     }
     if (location) {
       values.push(`%${location.toLowerCase()}%`);
       where.push(
-        `(LOWER(COALESCE(j.location->>'city','')) LIKE $${values.length} OR LOWER(COALESCE(e.location,'')) LIKE $${values.length})`
+        `(LOWER(COALESCE(j.location->>'city','')) LIKE $${values.length}
+          OR LOWER(COALESCE(j.location->>'province','')) LIKE $${values.length}
+          OR LOWER(COALESCE(e.location,'')) LIKE $${values.length}
+          OR (j.is_remote = TRUE AND $${values.length} LIKE '%remote%'))`
       );
     }
     values.push(limit);
     values.push(offset);
     const result = await db.query(
-      `SELECT ${JOB_SELECT}
+      `SELECT ${JOB_SELECT}${rankSelect}
          FROM jobs j
          LEFT JOIN employers e ON e.id = j.employer_id
         WHERE ${where.join(' AND ')}
-        ORDER BY j.posted_at DESC NULLS LAST, j.created_at DESC
+        ORDER BY ${orderBy}
         LIMIT $${values.length - 1} OFFSET $${values.length}`,
       values
     );

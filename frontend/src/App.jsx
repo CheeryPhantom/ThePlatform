@@ -8,6 +8,7 @@ import EmployerProfile from './components/EmployerProfile';
 import JobList from './components/JobList';
 import JobForm from './components/JobForm';
 import JobDetail from './components/JobDetail';
+import MyApplications from './components/MyApplications';
 import Assessment from './components/Assessment';
 import TrainingHub from './components/TrainingHub';
 import Messages from './components/Messages';
@@ -31,6 +32,7 @@ function App() {
             <Route path="/jobs/new" element={<JobForm />} />
             <Route path="/jobs/:id" element={<JobDetail />} />
             <Route path="/jobs/:id/edit" element={<JobForm />} />
+            <Route path="/applications" element={<MyApplications />} />
             <Route path="/assessment" element={<Assessment />} />
             <Route path="/training" element={<TrainingHub />} />
             <Route path="/messages" element={<Messages />} />

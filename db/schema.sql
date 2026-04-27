@@ -101,21 +101,36 @@ CREATE TABLE jobs (
 
 CREATE INDEX idx_jobs_document ON jobs USING GIN (to_tsvector('english', coalesce(title,'') || ' ' || coalesce(description,'')));
 
+ALTER TABLE jobs
+  ADD COLUMN IF NOT EXISTS screening_questions JSONB NOT NULL DEFAULT '[]'::jsonb;
+
 -- Applications
 CREATE TABLE job_applications (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   job_id UUID REFERENCES jobs(id) ON DELETE CASCADE,
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
-  status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'reviewing', 'shortlisted', 'interview', 'rejected', 'hired')),
+  status TEXT NOT NULL DEFAULT 'submitted' CHECK (status IN ('submitted', 'reviewing', 'shortlisted', 'interview', 'rejected', 'hired', 'withdrawn')),
   cover_letter TEXT,
   resume_url TEXT,
   notes TEXT,
+  internal_notes TEXT,
+  answers JSONB NOT NULL DEFAULT '{}'::jsonb,
   source TEXT,
   applied_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   reviewed_at TIMESTAMP WITH TIME ZONE,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   UNIQUE (job_id, user_id)
 );
+
+-- Saved jobs (candidate bookmarks)
+CREATE TABLE saved_jobs (
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  job_id UUID NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+  saved_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, job_id)
+);
+
+CREATE INDEX idx_saved_jobs_user_id ON saved_jobs(user_id);
 
 -- Assessment
 CREATE TABLE assessment_question_sets (

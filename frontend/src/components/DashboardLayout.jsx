@@ -6,15 +6,16 @@ import {
     User,
     Briefcase,
     Settings,
-    Bell,
     Menu,
     X,
     Search,
     Building2,
     PlusSquare,
     LogOut,
-    ChevronDown
+    ChevronDown,
+    FileText
 } from 'lucide-react';
+import NotificationsBell from './NotificationsBell';
 import './Dashboard.css';
 
 const DashboardLayout = ({ children }) => {
@@ -57,13 +58,14 @@ const DashboardLayout = ({ children }) => {
             { icon: Home, label: 'Dashboard', path: '/dashboard' },
             { icon: Building2, label: 'Company Profile', path: '/employer-profile' },
             { icon: Briefcase, label: 'Job Listings', path: '/jobs' },
-            { icon: PlusSquare, label: 'Post A Role', path: '/jobs' },
+            { icon: PlusSquare, label: 'Post A Role', path: '/jobs/new' },
             { icon: Settings, label: 'Settings', path: '/settings' }
         ]
         : [
             { icon: Home, label: 'Dashboard', path: '/dashboard' },
             { icon: User, label: 'Profile', path: '/profile' },
             { icon: Briefcase, label: 'Jobs', path: '/jobs' },
+            { icon: FileText, label: 'My Applications', path: '/applications' },
             { icon: Settings, label: 'Settings', path: '/settings' }
         ];
 
@@ -132,9 +134,7 @@ const DashboardLayout = ({ children }) => {
                         )}
                     </div>
                     <div className="header-actions">
-                        <button className="header-notification-btn" aria-label="Notifications">
-                            <Bell size={20} />
-                        </button>
+                        <NotificationsBell />
                         <div className="user-menu" ref={userMenuRef}>
                             <button
                                 className="header-avatar-btn"

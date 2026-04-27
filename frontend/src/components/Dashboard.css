@@ -292,6 +292,122 @@
   color: #b91c1c;
 }
 
+/* Notifications */
+.notifications-bell {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--error-500);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid white;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.15);
+  overflow: hidden;
+  z-index: 50;
+  animation: user-menu-pop 0.12s ease-out;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.notifications-header strong {
+  font-size: 0.95rem;
+  color: var(--gray-900);
+}
+
+.notifications-mark-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: none;
+  color: var(--primary-700);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notifications-mark-all:hover {
+  text-decoration: underline;
+}
+
+.notifications-empty {
+  padding: 1.5rem 1rem;
+  text-align: center;
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+
+.notifications-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.notification-item:hover,
+.notification-item:focus-visible {
+  background: var(--gray-50);
+  outline: none;
+}
+
+.notification-item.unread {
+  background: var(--primary-50);
+}
+
+.notification-item.unread:hover {
+  background: #dbeafe;
+}
+
+.notification-text {
+  font-size: 0.875rem;
+  color: var(--gray-900);
+  line-height: 1.4;
+  margin-bottom: 0.2rem;
+}
+
+.notification-time {
+  font-size: 0.7rem;
+  color: var(--gray-500);
+}
+
 /* Sidebar logout button */
 .sidebar-logout {
   margin-top: auto;

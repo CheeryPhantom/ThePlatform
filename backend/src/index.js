@@ -11,6 +11,7 @@ import skillsRoutes from "./routes/skills.js";
 import uploadsRoutes from "./routes/uploads.js";
 import certificationsRoutes from "./routes/certifications.js";
 import trainingRoutes from "./routes/training.js";
+import notificationsRoutes from "./routes/notifications.js";
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ app.use("/api/locations", locationsRoutes);
 app.use("/api/skills", skillsRoutes);
 app.use("/api/certifications", certificationsRoutes);
 app.use("/api/training", trainingRoutes);
+app.use("/api/notifications", notificationsRoutes);
 
 const PORT = process.env.PORT || 4000;
 
